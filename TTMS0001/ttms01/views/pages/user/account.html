@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已购电影票</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style_account.css">
+</head>
+<body>
+
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+            <a href="/backofficemanagement">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+            <a href="/showtickets">{{.Username}}</a>
+            <a href="/exit">注销</a>
+        {{else}}
+            <a href="pages/user/login.html">Login</a>
+            <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+<div class="container">
+    <header class="header">
+        <h1>已购电影票</h1>
+    </header>
+    <main class="main">
+        <ul class="ticket-list">
+            {{range .Tickets}}
+            <li class="ticket">
+                <h2>{{.Movie}}</h2>
+                <p>时间：{{.Time}}</p>
+                <p>影院：{{.Cinema}}</p>
+                <p>放映厅号：{{.Screen}}</p>
+                <p>座位号：{{.Seat}}</p>
+                <p>观影人：{{.Owner}}</p>
+                <p>单张票价：￥{{.Price}}</p>
+                <a href="/returnticket?Owner={{.Owner}}&Movie={{.Movie}}&Cinema={{.Cinema}}&Screen={{.Screen}}&Seat={{.Seat}}&Time={{.Time}}&Price={{.Price}}">
+                    <button class="refund-button">退票</button>
+                </a>
+                {{if $.IsAdmin}}
+                    <a href="/modifyticket?Owner={{.Owner}}&Movie={{.Movie}}&Cinema={{.Cinema}}&Screen={{.Screen}}&Seat={{.Seat}}&Time={{.Time}}&Price={{.Price}}">
+                        <button class="refund-button">修改票</button>
+                    </a>
+                {{else}}
+
+                {{end}}
+            </li>
+            {{end}}
+            <!-- 可以根据实际情况添加更多票务信息 -->
+        </ul>
+    </main>
+    <footer class="footer">
+        <p>© 2024 My Tickets. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

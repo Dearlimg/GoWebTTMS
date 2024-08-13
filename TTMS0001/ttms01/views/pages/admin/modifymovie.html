@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场次信息</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_addmoviesession.css">
+</head>
+<body>
+<div class="container">
+    <h1>修改电影信息</h1>
+    <form action="/modifymovie1" method="post">
+        <div class="form-group">
+            <label for="moviename">电影名称:</label>
+            <input type="text" id="moviename" name="moviename" value="{{.Movie.MovieName}}" required>
+        </div>
+        <div class="form-group">
+            <label for="actorname">演员:</label>
+            <input type="text" id="actorname" name="actorname" value="{{.Movie.ActorName}}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="time">年代:</label>
+            <input type="text" id="time" name="time" value="{{.Movie.Time}}" required>
+        </div>
+        <div class="form-group">
+            <label for="score">评分:</label>
+            <input type="text" id="score" name="score" value="{{.Movie.Score}}" required>
+        </div>
+        <div class="form-group">
+            <label for="boxoffice">票房:</label>
+            <input type="text" id="boxoffice" name="boxoffice" value="{{.Movie.BoxOffice}}" required>
+        </div>
+        <div class="form-group">
+            <label for="genre">类型:</label>
+            <input type="text" id="genre" name="genre" value="{{.Movie.Genre}}" required>
+        </div>
+        <div class="form-group">
+            <label for="area">地区:</label>
+            <input type="text" id="area" name="area" value="{{.Movie.Area}}" required>
+        </div>
+        <div class="form-group">
+            <label for="age">适和年龄段:</label>
+            <input type="text" id="age" name="age" value="{{.Movie.Age}}" required>
+        </div>
+        <div class="form-group">
+            <label for="img_path">海报:</label>
+            <input type="text" id="img_path" name="img_path" value="{{.Movie.ImgPath}}" required>
+        </div>
+        <div class="form-group">
+            <label for="duration">时长:</label>
+            <input type="text" id="duration" name="duration" value="{{.Movie.Duration}}" required>
+        </div>
+{{/*        <div class="form-group">*/}}
+{{/*            <label for="cinema">初映电影院:</label>*/}}
+{{/*            <input type="text" id="cinema" name="cinema" value="{{.Movie.Cinema}}" required>*/}}
+{{/*        </div>*/}}
+        <div class="form-group">
+            <label for="showtime">上映时间:</label>
+            <input type="text" id="showtime" name="showtime" value="{{.Movie.Showtime}}" required>
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

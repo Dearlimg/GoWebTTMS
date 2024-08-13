@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购买电影票</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style_realbuy.css">  <!-- 引入CSS样式 -->
+</head>
+<body>
+
+<div class="container">
+    <div class="form-title">购买电影票</div>
+    <div class="form-group">
+        <p>电影: {{.Movie.MovieName}}</p>
+        <img src="{{.Movie.ImgPath}}" alt="电影海报" style="width: 200px; height: 300px;">
+{{/*        {{if .IsAdmin}}*/}}
+{{/*            <div class="form-group">*/}}
+{{/*                <label for="owner">购票人:</label>*/}}
+{{/*                <input type="text" id="owner" name="owner" value="{{.Username}}" required>*/}}
+{{/*            </div>*/}}
+{{/*        {{else}}*/}}
+{{/*            <div class="form-group">*/}}
+{{/*                <label for="owner">购票人:</label>*/}}
+{{/*                <input type="text" id="owner" name="owner" value="{{.Username}}" readonly>*/}}
+{{/*            </div>*/}}
+{{/*        {{end}}*/}}
+        <p>观影时间: {{.ShowSession1.ShowTime}}</p>
+        <p>观影电影院: {{.ShowSession1.ShowCinema}}</p>
+        <p>放映厅: {{.ShowSession1.ShowScreen}}</p>
+        <P>价格:{{.ShowSession1.Price}}</P>
+        <div style="width: 312.5px; height: 300px">
+            <form action="/bill?ShowCinema={{.ShowSession1.ShowCinema}}&ShowScreen={{.ShowSession1.ShowScreen}}&ShowTime={{.ShowSession1.ShowTime}}&ShowMovie={{.Movie.MovieName}}&ShowInfo={{.ShowSession1.ShowInfo}}&Price={{.ShowSession1.Price}}" method="POST">
+                {{if .IsAdmin}}
+                    <div class="form-group">
+                        <label for="owner">购票人:</label>
+                        <input type="text" id="owner" name="owner" value="{{.Username}}" required>
+                    </div>
+                {{else}}
+                    <div class="form-group">
+                        <label for="owner">购票人:</label>
+                        <input type="text" id="owner" name="owner" value="{{.Username}}" readonly>
+                    </div>
+                {{end}}
+                {{range $index, $value := .Showinfo}}
+                    {{if eq $value 0}}
+                        <label>
+                            <a style="color: green">
+                                <input type="checkbox" name="seat{{$index}}" value="{{$value}}">
+                                <span style="color: green;">座位</span>
+                            </a>
+                        </label>
+                    {{else}}
+                        <label>
+                            <a style="color: red">
+                                <input type="checkbox" name="seat{{$index}}" value="1" disabled>
+                                <input type="hidden" name="seat{{$index}}" value="1">
+                                <span style="color: red;">座位</span>
+                            </a>
+                        </label>
+                    {{end}}
+                {{end}}
+                <a>注:红色表示已经售出,无法购买</a><br>
+                <input type="submit" value="购买">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影信息</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_addmoviesession.css">
+</head>
+<body>
+<div class="container">
+    <h1>新增电影信息</h1>
+    <form action="/addmovie1" method="post">
+        <div class="form-group">
+            <label for="moviename">电影名字:</label>
+            <input type="text" id="moviename" name="moviename" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="actorname">演员:</label>
+            <input type="text" id="actorname" name="actorname" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="time">年代:</label>
+            <input type="text" id="time" name="time" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="score">评分:</label>
+            <input type="text" id="score" name="score" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="boxoffice">票房:</label>
+            <input type="text" id="boxoffice" name="boxoffice" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="genre">类型:</label>
+            <input type="text" id="genre" name="genre" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="area">地区:</label>
+            <input type="text" id="area" name="area" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="age">适应年龄:</label>
+            <input type="text" id="age" name="age" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="img_path">img_path:</label>
+            <input type="text" id="img_path" name="img_path" value="static/img/The%20King%20Of%20Ring.png" required>
+        </div>
+        <div class="form-group">
+            <label for="Duration">时长:</label>
+            <input type="text" id="Duration" name="Duration" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="cinema">初映电影院:</label>
+            <input type="text" id="cinema" name="cinema" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="showtime">上映时间:</label>
+            <input type="text" id="showtime" name="showtime" value="" required>
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

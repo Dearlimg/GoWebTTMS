@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场次信息</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_addmoviesession.css">
+</head>
+<body>
+<div class="container">
+    <h1>修改电影票信息</h1>
+    <form action="/modifyticket1" method="post">
+        <div class="form-group">
+            <label for="owner">购票人:</label>
+            <input type="text" id="owner" name="owner" value="{{.Owner}}" required>
+        </div>
+        <div class="form-group">
+            <label for="movie">电影:</label>
+            <input type="text" id="movie" name="movie" value="{{.Movie}}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cinema">电影院:</label>
+            <input type="text" id="cinema" name="cinema" value="{{.Cinema}}" required>
+        </div>
+        <div class="form-group">
+            <label for="hall">放映厅:</label>
+            <input type="text" id="hall" name="hall" value="{{.Screen}}" required>
+        </div>
+        <div class="form-group">
+            <label for="seat">座位:</label>
+            <input type="text" id="seat" name="seat" value="{{.Seat}}" required>
+        </div>
+        <div class="form-group">
+            <label for="time">时间:</label>
+            <input type="text" id="time" name="time" value="{{.Time}}" required>
+        </div>
+        <div class="form-group">
+            <label for="price">价格:</label>
+            <input type="text" id="price" name="price" value="{{.Price}}" required>
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

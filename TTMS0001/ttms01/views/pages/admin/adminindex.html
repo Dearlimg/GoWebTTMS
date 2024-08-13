@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skyrim Cinema</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+            <a href="/backofficemanagement">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+            <a href="/showtickets">{{.Username}}</a>
+            <a href="/exit">注销</a>
+        {{else}}
+            <a href="pages/user/login.html">Login</a>
+            <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+<h1>Welcome To Skyrim Cinema</h1>
+
+<div class="search-container">
+    <input type="text" placeholder="Search" required>
+    <input type="button" value="Search">
+</div>
+
+<h2>正在热映</h2>
+<div class="book-container">
+    {{range .Movies}}
+        <div class="book-item">
+            <div class="book-info">
+                <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+                    <img src="{{.ImgPath}}" alt="Book1">
+                </a>
+                <p>{{.MovieName}}</p>
+                <p>{{.ActorName}}</p>
+                <p>{{.Score}}</p>
+            </div>
+            <img src={{.ImgPath}} alt="Book1">
+        </div>
+    {{end}}
+</div>
+
+<h2>即将上映</h2>
+<div class="book-container">
+    {{range .Movies}}
+        <div class="book-item">
+            <div class="book-info">
+                <img src={{.ImgPath}} alt="Book1">
+                <p>{{.MovieName}}</p>
+                <p>{{.ActorName}}</p>
+                <p>{{.Score}}</p>
+            </div>
+            <img src={{.ImgPath}} alt="Book1">
+        </div>
+    {{end}}
+</div>
+
+
+<h2>经典影片</h2>
+<div class="book-container">
+    {{range .Movies}}
+        <div class="book-item">
+            <div class="book-info">
+                <img src={{.ImgPath}} alt="Book1">
+                <p>{{.MovieName}}</p>
+                <p>{{.ActorName}}</p>
+                <p>{{.Score}}</p>
+            </div>
+            <img src={{.ImgPath}} alt="Book1">
+        </div>
+    {{end}}
+</div>
+
+<div class="container">
+
+    <!-- 今天票房排行榜 -->
+    <div class="section">
+        <h2 class="section-title">今天票房排行榜</h2>
+        <ul class="ranking-list" id="today-box-office">
+            <!-- JavaScript 动态生成 -->
+        </ul>
+    </div>
+
+    <!-- 最受期待排行榜 -->
+    <div class="section">
+        <h2 class="section-title">最受期待排行榜</h2>
+        <ul class="ranking-list" id="most-anticipated">
+            <!-- JavaScript 动态生成 -->
+        </ul>
+    </div>
+
+    <!-- Top 排行榜 -->
+    <div class="section">
+        <h2 class="section-title">Top 排行榜</h2>
+        <ul class="ranking-list" id="top-ranked">
+            <!-- JavaScript 动态生成 -->
+        </ul>
+    </div>
+
+</div>
+
+<!--<script src="/static/js/scripts.js"></script>-->
+</body>
+</html>

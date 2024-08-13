@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影大全</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_movie1.css"> <!-- 引入样式表 -->
+</head>
+<body>
+
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+            <a href="#">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+            <a href="/showtickets">{{.Username}}</a>
+            <a href="/exit">注销</a>
+        {{else}}
+            <a href="pages/user/login.html">Login</a>
+            <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+<header>
+    <h1>电影大全</h1>
+    <form id="filter-form">
+        <label for="genre">选择类型:</label>
+        <select name="genre" id="genre">
+            <option value="">所有类型</option>
+            <option value="Action">动作</option>
+            <option value="Comedy">喜剧</option>
+            <option value="Drama">剧情</option>
+            <option value="Crime">犯罪</option>
+        </select>
+
+        <label for="region">选择区域:</label>
+        <select name="region" id="region">
+            <option value="">所有区域</option>
+            <option value="USA">美国</option>
+            <option value="UK">英国</option>
+            <option value="China">中国</option>
+        </select>
+
+        <label for="decade">选择年代:</label>
+        <select name="decade" id="decade">
+            <option value="">所有年代</option>
+            <option value="1970">70年代</option>
+            <option value="1980">80年代</option>
+            <option value="1990">90年代</option>
+            <option value="2000">00年代</option>
+            <option value="2010">10年代</option>
+        </select>
+
+        <label for="sort">排序选择:</label>
+        <select name="sort" id="sort">
+            <option value="">无</option>
+            <option value="asc">升序</option>
+            <option value="desc">降序</option>
+        </select>
+        <a href="/MovieSearch" methods="POST">
+            <button type="submit">筛选</button>
+        </a>
+{{/*        {{if .IsAdmin}}*/}}
+{{/*            <a href="/addmovie" methods="POST">*/}}
+{{/*                <button type="submit">新增电影</button>*/}}
+{{/*            </a>*/}}
+{{/*        {{else}}*/}}
+
+{{/*        {{end}}*/}}
+    </form>
+    {{if .IsAdmin}}
+        <a href="/addmovie" methods="POST">
+            <button type="submit" style="height: 40px;width: 140px">新增电影</button>
+        </a>
+    {{else}}
+
+    {{end}}
+</header>
+
+<main id="movies-list">
+    {{range .Movies}}
+    <div class="movie">
+        <h2>{{.MovieName}}</h2>
+        <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+            <img src="{{.ImgPath}}" alt="Book1">
+        </a>
+        <p>类型: {{.Genre}}</p>
+        <p>区域: {{.Area}}</p>
+        <p>年代: {{.Time}}</p>
+{{/*        <p>上映时间: {{.ShowTime}}</p>*/}}
+        <p>票房: {{.BoxOffice}}</p>
+        <p>评分: {{.Score}}</p>
+        {{if $.IsAdmin}}
+            <a href="/deletemovie?moviename={{.MovieName}}">
+                <button type="submit">删除电影</button>
+            </a>
+            <a href="/modifymovie?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}&ShowTime={{.Showtime}}">
+                <button type="submit">修改电影</button>
+            </a>
+        {{else}}
+        {{end}}
+    </div>
+    {{end}}
+    <!-- 其他电影卡片 -->
+</main>
+
+</body>
+</html>

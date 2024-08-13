@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skyrim Cinema</title>
+{{/*    <link type="text/css" rel="stylesheet" href="static/css/style.css">*/}}
+    <link type="text/css" rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+        <a href="#">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+        <a href="/showtickets">{{.Username}}</a>
+        <a href="/exit">注销</a>
+        {{else}}
+        <a href="pages/user/login.html">Login</a>
+        <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+<h1>Welcome To Skyrim Cinema</h1>
+
+<div class="search-container">
+    <form action="/mainsearch" method="get">
+        <input type="text" placeholder="Search" name="search" required>
+        <input type="submit" value="Search">
+    </form>
+</div>
+
+{{/*<div class="search-container" >*/}}
+{{/*    <form >*/}}
+{{/*        <input type="text" placeholder="Search" name="search">*/}}
+{{/*        <a href="/mainsearch">*/}}
+{{/*            <input type="submit" value="Search">*/}}
+{{/*        </a>*/}}
+{{/*    </form>*/}}
+{{/*</div>*/}}
+
+{{/*<div class="search-container" >*/}}
+{{/*    <form action="/login" method="post">*/}}
+{{/*        <input type="text" placeholder="Search the movie you want" required>*/}}
+{{/*        <input type="button" value="Search">*/}}
+{{/*    </form>*/}}
+{{/*</div>*/}}
+
+
+
+<a href="/movieSearch">
+<h2>正在热映Top6</h2>
+</a>
+    <div class="book-container">
+        {{range .Movies}}
+        <div class="book-item">
+            <div class="book-info">
+                <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+                    <img src="{{.ImgPath}}" alt="Book1">
+                </a>
+                <p>{{.MovieName}}</p>
+                <p>{{.ActorName}}</p>
+                <p>{{.Score}}</p>
+            </div>
+            <img src={{.ImgPath}} alt="Book1">
+        </div>
+        {{end}}
+    </div>
+
+<a href="/movieSearch">
+    <h2>即将上映Top6</h2>
+</a>
+<div class="book-container">
+    {{range .ComingMovies}}
+    <div class="book-item">
+        <div class="book-info">
+            <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+                <img src="{{.ImgPath}}" alt="Book1">
+            </a>
+            <p>{{.MovieName}}</p>
+            <p>{{.ActorName}}</p>
+            <p>{{.Score}}</p>
+        </div>
+        <img src={{.ImgPath}} alt="Book1">
+    </div>
+    {{end}}
+</div>
+
+
+<a href="/movieSearch">
+    <h2>经典影片Top6</h2>
+</a>
+<div class="book-container">
+    {{range .ClassicMovies}}
+    <div class="book-item">
+        <div class="book-info">
+            <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+                <img src="{{.ImgPath}}" alt="Book1">
+            </a>
+            <p>{{.MovieName}}</p>
+            <p>{{.ActorName}}</p>
+            <p>{{.Score}}</p>
+        </div>
+        <img src={{.ImgPath}} alt="Book1">
+    </div>
+    {{end}}
+</div>
+
+<!--<script src="/static/js/scripts.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.movie-info, .ticket-info, .payment-info {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.ticket-info form {
+    display: flex;
+    flex-direction: column;
+}
+
+.ticket-info label {
+    margin-bottom: 8px;
+}
+
+.ticket-info input, .ticket-info select {
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.ticket-info button, .payment-info button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.ticket-info button:hover, .payment-info button:hover {
+    background-color: #0056b3;
+}
+
+.payment-info select {
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.payment-info p {
+    margin-bottom: 8px;
+}
+
+.button-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff; /* 按钮背景色 */
+    color: #fff; /* 按钮文字颜色 */
+    text-decoration: none; /* 去除链接的下划线 */
+    border: none;
+    cursor: pointer;
+    border-radius: 5px; /* 可选：添加圆角 */
+}
+
+.submit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-btn:hover {
+    background-color: #007bff;
+}
+
+.show-info {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.show-info h3 {
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+.show-info p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.show-info p:first-child {
+    margin-top: 0;
+}
+
+.show-info p:last-child {
+    margin-bottom: 0;
+}
+
+nav {
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+nav a:hover {
+    background-color: #ddd;
+}
+.right-nav {
+    display: flex;
+    align-items: center;
+}
+.right-nav a {
+    margin-left: 15px;
+}
+

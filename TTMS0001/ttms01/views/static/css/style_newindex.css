@@ -1,0 +1,127 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav div {
+    display: flex;
+    align-items: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: #007aff;
+    margin-right: 15px;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: #005bb5;
+}
+
+.right-nav a {
+    margin-left: 15px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 20px;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.search-container form {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+.search-container input[type="text"] {
+    border: none;
+    padding: 10px 20px;
+    flex: 1;
+    font-size: 16px;
+}
+
+.search-container input[type="submit"] {
+    border: none;
+    background-color: #007aff;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 0 25px 25px 0;
+}
+
+.search-container input[type="submit"]:hover {
+    background-color: #005bb5;
+}
+
+.book-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.book-item {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 10px;
+    padding: 15px;
+    width: calc(33% - 20px);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.book-item img {
+    border-radius: 10px;
+    max-width: 100%;
+    height: auto;
+}
+
+.book-info {
+    margin: 10px 0;
+}
+
+.book-info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+    .book-item {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .book-item {
+        width: calc(100% - 20px);
+    }
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影院大全</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_cinema.css"> <!-- 引入样式表 -->
+</head>
+<body>
+
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+            <a href="#">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+            <a href="/showtickets">{{.Username}}</a>
+            <a href="/exit">注销</a>
+        {{else}}
+            <a href="pages/user/login.html">Login</a>
+            <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+<header>
+    <h1>影院大全</h1>
+    <form id="filter-form">
+{{/*        <label for="brand">选择品牌:</label>*/}}
+{{/*        <select name="brand" id="brand">*/}}
+{{/*            <option value="">所有品牌</option>*/}}
+{{/*            <option value="imax">IMAX</option>*/}}
+{{/*            <option value="uacineplex">UA影城</option>*/}}
+{{/*            <option value="wanda">万达影城</option>*/}}
+{{/*        </select>*/}}
+
+        <label for="district">选择行政区:</label>
+        <select name="district" id="district">
+            <option value="">所有行政区</option>
+            <option value="长安区">长安区</option>
+            <option value="雁塔区">雁塔区</option>
+        </select>
+
+        <label for="rank">选择影厅级别:</label>
+        <select name="rank" id="rank">
+            <option value="">全部</option>
+            <option value="低档">低档</option>
+            <option value="中档">中档</option>
+            <option value="高档">高档</option>
+        </select>
+        <a href="/cinemaSearch">
+            <button type="submit" >筛选</button>
+        </a>
+    </form>
+    {{if $.IsAdmin}}
+        <a href="/addcinema" style="width: 140px;height: 40px;">
+            <button type="submit">增加影城</button>
+        </a>
+    {{else}}
+    {{end}}
+</header>
+
+<main id="cinema-list">
+{{/*    <div class="Cinema">*/}}
+{{/*        <h2>影院名称</h2>*/}}
+{{/*        <p>品牌: IMAX</p>*/}}
+{{/*        <p>行政区: 浦东新区</p>*/}}
+{{/*        <p>影厅类型: IMAX厅</p>*/}}
+{{/*        <p>服务: 停车服务, 小吃服务</p>*/}}
+{{/*        <p>距离: 2.5公里</p>*/}}
+{{/*        <p>价格: ¥100 起</p>*/}}
+{{/*    </div>*/}}
+    <!-- 其他影院卡片 -->
+    {{range .Cinema}}
+    <div class="cinema">
+        <h2>{{ .CinemaName}}</h2>
+
+        <a href="/choicescreenroom?CinemaName={{ .CinemaName}}&Place={{.Place}}&Rank={{.Rank}}">
+            <img src="static/img/cinema1.png" alt="电影院外观" style="width: 300px; height: 200px;">
+        </a>
+
+        <p>行政区: {{.Place}}</p>
+        <p>等级:{{.Rank}}</p>
+        {{if $.IsAdmin}}
+            <a href="/deletecinema?cinemaname={{.CinemaName}}">
+                <button type="submit">删除影城</button>
+            </a>
+            <a href="/modifycinema?cinemaname={{.CinemaName}}&place={{.Place}}&cinemarank={{.Rank}}">
+                <button type="submit">修改影城</button>
+            </a>
+        {{else}}
+        {{end}}
+    </div>
+    {{end}}
+</main>
+
+{{/*<footer>*/}}
+{{/*    <p>排序方式: <button>按价格</button> <button>按距离</button></p>*/}}
+{{/*</footer>*/}}
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>影城信息</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_addmoviesession.css">
+</head>
+<body>
+<div class="container">
+    <h1>新增影城信息</h1>
+    <form action="/addcinema1" method="post">
+        <div class="form-group">
+            <label for="cinema_name">影城名字:</label>
+            <input type="text" id="cinema_name" name="cinema_name" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="place">所在区域:</label>
+            <input type="text" id="place" name="place" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="cinema_rank">档次:</label>
+            <input type="text" id="cinema_rank" name="cinema_rank" value="" required>
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

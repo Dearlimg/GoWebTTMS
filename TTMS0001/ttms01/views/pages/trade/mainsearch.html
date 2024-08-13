@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影购票页面</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style_buy.css"> <!-- 样式表链接，你可以根据需要自定义样式 -->
+</head>
+<body>
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+            <a href="#">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+            <a href="/showtickets">{{.Username}}</a>
+            <a href="/exit">注销</a>
+        {{else}}
+            <a href="pages/user/login.html">Login</a>
+            <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+{{/*<div class="movie-info">*/}}
+{{/*    <h2>电影信息</h2>*/}}
+{{/*    <img src="{{.Movie.ImgPath}}" alt="电影海报" style="width: 200px; height: 300px;">*/}}
+{{/*    <p><strong>电影名称:</strong> {{.Movie.MovieName}}</p>*/}}
+{{/*    <p><strong>主演:</strong> {{.Movie.ActorName}}</p>*/}}
+{{/*    <p><strong>评分:</strong> {{.Movie.Score}}</p>*/}}
+{{/*    <p><strong>票房:</strong> {{.Movie.BoxOffice}}</p>*/}}
+{{/*    <p><strong>地区:</strong> {{.Movie.Area}}</p>*/}}
+{{/*    <p><strong>类型:</strong> {{.Movie.Genre}}</p>*/}}
+{{/*    <p><strong>上映时间:</strong> {{.Movie.Time}}</p>*/}}
+{{/*    <p><strong>时长:</strong> {{.Movie.Duration}}min</p>*/}}
+{{/*    <p><strong>级别:</strong> {{.Movie.Age}}</p>*/}}
+{{/*</div>*/}}
+{{range .Movies}}
+<div class="movie-info">
+    <h2>电影信息</h2>
+{{/*    <img src="{{.ImgPath}}" alt="电影海报" style="width: 200px; height: 300px;">*/}}
+    <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+        <img src="{{.ImgPath}}" alt="Book1">
+    </a>
+    <p><strong>电影名称:</strong> {{.MovieName}}</p>
+    <p><strong>主演:</strong> {{.ActorName}}</p>
+    <p><strong>评分:</strong> {{.Score}}</p>
+    <p><strong>票房:</strong> {{.BoxOffice}}</p>
+    <p><strong>地区:</strong> {{.Area}}</p>
+    <p><strong>类型:</strong> {{.Genre}}</p>
+    <p><strong>上映时间:</strong> {{.Time}}</p>
+    <p><strong>时长:</strong> {{.Duration}}min</p>
+    <p><strong>级别:</strong> {{.Age}}</p>
+</div>
+{{end}}
+{{/*<div class="movie-info">*/}}
+{{/*    <h3>场次信息</h3>*/}}
+
+{{/*    <p>电影院:</p>*/}}
+{{/*    <p>放映厅:</p>*/}}
+{{/*    <p>放映时间:</p>*/}}
+{{/*    <p>放映电影:</p>*/}}
+{{/*    <p>场次信息:</p>*/}}
+{{/*</div>*/}}
+{{/*{{range .ShowSession}}*/}}
+{{/*    <div class="movie-info">*/}}
+{{/*        <h3>场次信息</h3>*/}}
+{{/*        <p>放映电影:{{.ShowMovie}}</p>*/}}
+{{/*        <p>电影院:{{.ShowCinema}}</p>*/}}
+{{/*        <p>放映厅:{{.ShowScreen}}</p>*/}}
+{{/*        <p>放映时间:{{.ShowTime}}</p>*/}}
+{{/*        <p>价格:{{.Price}}</p>*/}}
+{{/*        <p>剩余:{{.Remaining}}</p>*/}}
+{{/*        {{if .State}}*/}}
+{{/*            <a  class="button-link">已经卖完了</a>*/}}
+{{/*        {{else}}*/}}
+{{/*            {{if $.IsLogin}}*/}}
+{{/*                <a href="/buy?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link" >看这场</a>*/}}
+{{/*            {{else}}*/}}
+{{/*                <a href="pages/user/login.html" class="button-link">快去登录吧</a>*/}}
+{{/*            {{end}}*/}}
+{{/*        {{end}}*/}}
+{{/*        */}}{{/*    <p>场次信息:</p>*/}}
+{{/*    </div>*/}}
+{{/*{{end}}*/}}
+<a href="/main" class="button-link" >继续选择</a>
+</body>
+</html>

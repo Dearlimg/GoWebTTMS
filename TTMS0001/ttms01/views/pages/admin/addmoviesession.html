@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场次信息</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_addmoviesession.css">
+</head>
+<body>
+<div class="container">
+    <h1>新增场次信息</h1>
+    <form action="/addmoviesession1" method="post">
+        <div class="form-group">
+            <label for="movie">放映电影:</label>
+            <input type="text" id="movie" name="movie" value="{{.ShowSession1.ShowMovie}}" required>
+        </div>
+
+{{/*        {{if .ShowSession1.ShowMovie}}*/}}
+{{/*            <div class="form-group">*/}}
+{{/*                <label for="movie">放映电影:</label>*/}}
+{{/*                <input type="button" id="movie" name="movie" value="{{.ShowSession1.ShowMovie}}" required>*/}}
+{{/*            </div>*/}}
+{{/*        {{else}}*/}}
+{{/*            <div class="form-group">*/}}
+{{/*                <label for="movie">放映电影:</label>*/}}
+{{/*                <input type="text" id="movie" name="movie" value="{{.ShowSession1.ShowMovie}}" required>*/}}
+{{/*            </div>*/}}
+{{/*        {{end}}*/}}
+
+
+{{/*        {{if .ShowSession1.ShowCinema}}*/}}
+{{/*        <div class="form-group">*/}}
+{{/*            <label for="cinema">电影院:</label>*/}}
+{{/*            <input type="button" id="cinema" name="cinema" value="{{.ShowSession1.ShowCinema}}" required>*/}}
+{{/*        </div>*/}}
+{{/*        {{else}}*/}}
+        <div class="form-group">
+            <label for="cinema">电影院:</label>
+            <input type="text" id="cinema" name="cinema" value="{{.ShowSession1.ShowCinema}}" required>
+        </div>
+{{/*        {{end}}*/}}
+        <div class="form-group">
+            <label for="hall">放映厅:</label>
+            <input type="text" id="hall" name="hall" value="{{.ShowSession1.ShowScreen}}" required>
+        </div>
+        {{if .Message}}
+            <a style="color: red">时间冲突了</a>
+        {{else}}
+        {{end}}
+        <div class="form-group">
+            <label for="time">放映时间:</label>
+            <input type="text" id="time" name="time" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="price">价格:</label>
+            <input type="text" id="price" name="price" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="remaining">剩余:</label>
+            <input type="button" id="remaining" name="remaining" value="20" required>
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

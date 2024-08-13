@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购票账单</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/style_bill.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>购票成功</h1>
+        <p>感谢您的购买！以下是您的购票详情：</p>
+    </div>
+
+    <div class="ticket-list">
+{{/*        <div class="ticket-item">*/}}
+{{/*            <span>座位 1:</span>*/}}
+{{/*            <span>¥100.00</span>*/}}
+{{/*        </div>*/}}
+{{/*        <div class="ticket-item">*/}}
+{{/*            <span>座位 2:</span>*/}}
+{{/*            <span>¥120.00</span>*/}}
+{{/*        </div>*/}}
+{{range .Seatinfo}}
+        <div class="ticket-item">
+            <span>座位 {{.}}:</span>
+            <span>¥{{$.ShowSession1.Price}}</span>
+        </div>
+        {{end}}
+        <!-- 根据需要添加更多座位信息 -->
+    </div>
+
+    <div class="total">
+        <span>总计：¥{{.SumPrice}}</span>
+    </div>
+    <div class="back-home">
+        <a href="/main" class="btn">返回主页</a>
+    </div>
+    <div class="back-home">
+        <a href="/showtickets" class="btn">已购得票</a>
+    </div>
+</div>
+</body>
+</html>

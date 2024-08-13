@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场次信息</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_addmoviesession.css">
+</head>
+<body>
+<div class="container">
+    <h1>修改电影票信息</h1>
+    <form action="/modifycinema1" method="post">
+        <div class="form-group">
+            <label for="cinemaname">影城名称:</label>
+            <input type="text" id="cinemaname" name="cinemaname" value="{{.CinemaName}}" required>
+        </div>
+        <div class="form-group">
+            <label for="place">所在区域:</label>
+            <input type="text" id="place" name="place" value="{{.Place}}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cinemarank">档次:</label>
+            <input type="text" id="cinemarank" name="cinemarank" value="{{.Rank}}" required>
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+</body>
+</html>

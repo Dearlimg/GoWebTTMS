@@ -1,0 +1,203 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    /*font-family: 'Helvetica', sans-serif;*/
+    background-color: #f5f5f5;
+    margin: 20px;
+    padding: 20px;
+}
+a {
+    text-decoration: none; /* 去掉链接的下划线 */
+    color: inherit; /* 保持文本颜色与父元素一致 */
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+/*a {*/
+/*    text-decoration: none; !* 去掉链接的下划线 *!*/
+/*    color: inherit; !* 保持文本颜色与父元素一致 *!*/
+/*}*/
+
+/*a h2 {*/
+/*    margin: 0; !* 确保标题没有额外的外边距 *!*/
+/*}*/
+
+
+
+h2 {
+    color: #333;
+    text-align: left;
+    padding-left: 50px; /* 可根据需要调整距离 */
+}
+
+
+
+.search-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+.search-container input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+}
+.search-container input[type="submit"] {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007aff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.book-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.book-item {
+    width: 150px;
+    text-align: center;
+    margin-bottom: 40px; /* 调整书籍之间的间距 */
+    padding-bottom: 20px; /* 留出简介部分的空间 */
+    border-bottom: 1px solid #ccc; /* 可选：添加书籍项之间的分隔线 */
+    position: relative; /* 让子元素的绝对定位以其相对定位 */
+}
+
+.book-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: opacity 0.3s ease;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.book-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-section {
+    position: absolute;
+    top: 20px; /* Adjust top position as needed */
+    right: 20px; /* Adjust right position as needed */
+}
+
+.user-section a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #333;
+}
+.book-item p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+.book-item:hover .book-info {
+    opacity: 1;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.section {
+    background-color: #ffffff;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.ranking-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.ranking-item img {
+    width: 60px;
+    height: 80px;
+    margin-right: 15px;
+    border-radius: 8px;
+}
+
+.ranking-item-info {
+    flex: 1;
+}
+
+.ranking-item-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.ranking-item-meta {
+    font-size: 14px;
+    color: #666666;
+}
+
+nav {
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+nav a {
+    color: #333;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+nav a:hover {
+    background-color: #ddd;
+}
+.right-nav {
+    display: flex;
+    align-items: center;
+}
+.right-nav a {
+    margin-left: 15px;
+}
+
+
+

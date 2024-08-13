@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>场次选择</title>
+    <link type="text/css" rel="stylesheet" href="static/css/style_screenroom.css"> <!-- 引入样式表 -->
+</head>
+<body>
+
+<nav>
+    <div>
+        <a href="/main">首页</a>
+        <a href="/movieSearch">电影</a>
+        <a href="/cinemaSearch">影院</a>
+        {{if .IsAdmin}}
+            <a href="#">后台管理</a>
+        {{else}}
+        {{end}}
+    </div>
+    <div class="right-nav">
+        {{if .IsLogin}}
+            <a href="/showtickets">{{.Username}}</a>
+            <a href="/exit">注销</a>
+        {{else}}
+            <a href="pages/user/login.html">Login</a>
+            <a href="pages/user/register.html">Register</a>
+        {{end}}
+    </div>
+</nav>
+
+<header>
+    <h1>放映厅选择</h1>
+    {{if $.IsAdmin}}
+        <a href="/addmoviesession?cinemaname={{$.ShowSession1.ShowCinema}}">
+            <button type="submit">增加场次</button>
+        </a>
+    {{else}}
+    {{end}}
+</header>
+
+<main id="screenroom-list">
+    <!-- 放映厅列表 -->
+{{/*    <div class="screenroom">*/}}
+{{/*        <h2>放映厅1</h2>*/}}
+{{/*        <p>影院: 影院1</p>*/}}
+{{/*        <p>日期: 2024-08-07</p>*/}}
+{{/*        <p>电影: 电影1</p>*/}}
+{{/*        <p>时间: 19:00</p>*/}}
+{{/*        <p>票价: ¥50</p>*/}}
+{{/*        <button>选择座位</button>*/}}
+{{/*    </div>*/}}
+    {{range .ShowSession}}
+    <div class="screenroom">
+        <h2>放映厅{{.ShowScreen}}</h2>
+        <img src="{{.MovieImgPath}}" alt="电影海报" style="width: 200px; height: 300px;">
+        <p>电影: {{.ShowMovie}}</p>
+        <p>价格: {{.Price}}</p>
+        <p>日期: {{.ShowTime}}</p>
+        <p>剩余:{{.Remaining}}</p>
+
+        {{if .State}}
+            <a  class="button-link">已经卖完了</a>
+        {{else}}
+            {{if $.IsLogin}}
+                <a href="/buy?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link" >看这场</a>
+            {{else}}
+                <a href="pages/user/login.html" class="button-link">快去登录吧</a>
+            {{end}}
+        {{end}}
+
+
+{{/*        {{if .State}}*/}}
+{{/*            <a>*/}}
+{{/*                <button>卖光了</button>*/}}
+{{/*            </a>*/}}
+{{/*        {{else}}*/}}
+{{/*        <a href="/buyticket">*/}}
+{{/*            <button>买票</button>*/}}
+{{/*        </a>*/}}
+{{/*        {{end}}*/}}
+
+{{/*        <button>买票</button>*/}}
+    </div>
+    {{end}}
+    <!-- 更多放映厅卡片 -->
+</main>
+
+</body>
+</html>
