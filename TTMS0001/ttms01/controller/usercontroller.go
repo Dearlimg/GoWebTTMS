@@ -248,6 +248,7 @@ func SubmitComment(w http.ResponseWriter, r *http.Request) {
 	comment := r.FormValue("comment")
 	At := r.FormValue("At")
 	time := time.Now()
+
 	Comment := &model.Comment{
 		Speaker: speaker,
 		Comment: comment,

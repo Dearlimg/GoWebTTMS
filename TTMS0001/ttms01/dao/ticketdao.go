@@ -8,8 +8,8 @@ import (
 )
 
 func SaveData(data string, session *model.MovieSession) error {
-	sql := "update movie_session set info=? where cinema=? and screenroom=? and movietime=? and movie=?"
-	_, err := utils.Db.Exec(sql, data, session.ShowCinema, session.ShowScreen, session.ShowTime, session.ShowMovie)
+	sql := "update moviesession set showinfo=? where cinemaid=? and screenroom=? and showtime=? and movieid=?"
+	_, err := utils.Db.Exec(sql, data, session.CinemaId, session.ShowScreen, session.ShowTime, session.MovieId)
 	if err != nil {
 		return err
 	}
@@ -35,8 +35,8 @@ func Compare(new string, old string) []int {
 }
 
 func AddTicket(ticket *model.Ticket) error {
-	sql := "insert into tickets(owner,cinema,screen,seat,showtime,movie,price) values(?,?,?,?,?,?,?)"
-	_, err := utils.Db.Exec(sql, ticket.Owner, ticket.Cinema, ticket.Screen, ticket.Seat, ticket.Time, ticket.Movie, ticket.Price)
+	sql := "insert into ticket(userid,moveisessionid,state) values(?,?,1)"
+	_, err := utils.Db.Exec(sql, ticket.UserId, ticket.MovieSessionId)
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func AddTicket(ticket *model.Ticket) error {
 }
 
 func GetTicketsByName(username string) ([]model.Ticket, error) {
-	sql := "select * from tickets where owner=?"
+	sql := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on moviesession.moviesessionid=ticket.moviesessionid join user on user.userid=ticket.userid where user.username=?"
 	rows, err := utils.Db.Query(sql, username)
 	if err != nil {
 		return nil, err
@@ -60,30 +60,21 @@ func GetTicketsByName(username string) ([]model.Ticket, error) {
 	return tickets, nil
 }
 
-func DeleteTicketByAllInfo(ticket *model.Ticket) error {
-	sql := "delete from tickets where owner=? and cinema=? and screen=? and seat=? and showtime=? and movie=? and price=?"
-	//fmt.Println("DeleteTicketByAllInfo", ticket)
-	_, err := utils.Db.Exec(sql, ticket.Owner, ticket.Cinema, ticket.Screen, ticket.Seat, ticket.Time, ticket.Movie, ticket.Price)
-	if err != nil {
-		return err
-	}
-	return nil
+func DeleteTicketByAllInfo(ticket *model.Ticket) {
+	sql := "update ticket set state=0 where userid = ? and moviesessionid=? and seat=?"
+	_, _ = utils.Db.Exec(sql, ticket.UserId, ticket.MovieSessionId, ticket.Seat)
 }
 
-func DeleteTicketWithoutSeat(ticket *model.Ticket) error {
-	sql := "delete from tickets where owner=? and cinema=? and screen=? and showtime=? and movie=? and price=?"
-	//fmt.Println("DeleteTicketByAllInfo", ticket)
-	_, err := utils.Db.Exec(sql, ticket.Owner, ticket.Cinema, ticket.Screen, ticket.Time, ticket.Movie, ticket.Price)
-	if err != nil {
-		return err
-	}
-	return nil
+func DeleteTicketWithoutSeat(ticket *model.Ticket) {
+	sql := "update ticket set state=0 where userid = ? and moviesessionid=? and seat=?"
+	_, _ = utils.Db.Exec(sql, ticket.UserId, ticket.MovieSessionId, ticket.Seat)
 }
 
 func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) {
-	sql := "select * from movie_session where cinema=? and screenroom=? and movietime=? and movie=? and price=?"
+	//sql := "select * from moviesession where cinema=? and screenroom=? and movietime=? and movie=? and price=?"
+	sql0 := "select cinema.cinemaname,moviesession.screenroom,moviesession.showtime,movie.moviename,moviesession.showinfo,moviesession.price from moviesession join ticket on moviesession.moviesessionid=ticket.moviesessionid join movie on movie.movieid=moviesession.movieid where ticket.userid=?"
 	//fmt.Println("GetMovieSessionByTicket", ticket)
-	row := utils.Db.QueryRow(sql, ticket.Cinema, ticket.Screen, ticket.Time, ticket.Movie, ticket.Price)
+	row := utils.Db.QueryRow(sql0, ticket.UserId)
 	res := &model.MovieSession{}
 	err := row.Scan(&res.ShowCinema, &res.ShowScreen, &res.ShowTime, &res.ShowMovie, &res.ShowInfo, &res.Price)
 	//fmt.Println(res)
@@ -92,25 +83,6 @@ func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) 
 	}
 	return res, nil
 }
-
-//func ModifySessionInfo(sessioninfo string, seat string) string {
-//	pseat := strings.Replace(seat, "_", "", -1)
-//	seatnums := []int(pseat)
-//	runesessioninfo := []int(sessioninfo)
-//	fmt.Println(seatnums)
-//	fmt.Println(runesessioninfo)
-//	for i := 0; i < len(seatnums); i++ {
-//		for j := 0; j < len(sessioninfo); j++ {
-//			if j == seatnums[i]-1 {
-//				if runesessioninfo[j] == 0 {
-//					runesessioninfo[j] = 1
-//				} else {
-//					runesessioninfo[j] = 0
-//				}
-//			}
-//		}
-//	}
-//}
 
 func ModifySessionInfo(sessioninfo string, seat string, way string) string {
 	pseats := strings.Split(strings.Replace(seat, "_", " ", -1), " ")
@@ -135,8 +107,9 @@ func ModifySessionInfo(sessioninfo string, seat string, way string) string {
 }
 
 func GetAllTickets() []model.Ticket {
-	sql := "select * from tickets"
-	rows, _ := utils.Db.Query(sql)
+	//sql := "select * from tickets"
+	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join ticket.userid=user.userid where user.username=?"
+	rows, _ := utils.Db.Query(sql0)
 	defer rows.Close()
 	tickets := []model.Ticket{}
 	for rows.Next() {

@@ -7,32 +7,28 @@ import (
 )
 
 func AddSession(sess *model.Session) error {
-	sqlStr := "insert into sessions values (?,?,?)"
-	_, err := utils.Db.Exec(sqlStr, sess.SessionID, sess.UserName, sess.UserID)
+	sqlStr := "insert into session(userid,state,session) values (?,1,?)"
+	_, err := utils.Db.Exec(sqlStr, sess.UserID, sess.SessionID)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteSession(sessID string) error {
-	sqlStr := "delete from sessions where session_id=?"
-	_, err := utils.Db.Exec(sqlStr, sessID)
-	if err != nil {
-		return err
-	}
-	return nil
+func DeleteSession(sessID string) {
+	SQL := "update session set state=0 where session = ?"
+	utils.Db.Exec(SQL, sessID)
 }
 
 func GetSession(sessionID string) (*model.Session, error) {
-	sqlStr := "select * from sessions where session_id=?"
+	sqlStr := "select * from session where session=?"
 	inStmt, err := utils.Db.Prepare(sqlStr)
 	if err != nil {
 		return nil, err
 	}
 	row := inStmt.QueryRow(sessionID)
 	session := &model.Session{}
-	row.Scan(&session.SessionID, &session.UserName, &session.UserID)
+	row.Scan(&session.SessionID, &session.UserID, &session.State, &session.Session)
 	return session, nil
 }
 

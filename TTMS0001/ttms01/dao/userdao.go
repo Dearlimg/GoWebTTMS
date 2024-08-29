@@ -8,7 +8,7 @@ import (
 )
 
 func AddUser(user model.User) error {
-	sql := "insert into users(username,password,email) values(?,?,?)"
+	sql := "insert into users(username,password,email,state) values(?,?,?,1)"
 
 	md5Pwd := md5.Sum([]byte(user.Password))
 	strmd5 := hex.EncodeToString(md5Pwd[:])
@@ -21,13 +21,11 @@ func AddUser(user model.User) error {
 	return nil
 }
 
-func DeleteUserByUserName(username string) error {
-	sql := "delete from user where username=?"
-	_, err := utils.Db.Exec(sql, username)
-	if err != nil {
-		return err
-	}
-	return nil
+func DeleteUserByUserName(username string) {
+	sql0 := "select userid from user where username=?"
+	rows := utils.Db.QueryRow(sql0, username)
+	sql := "update user set state=0 where userid=?"
+	utils.Db.Exec(sql, rows)
 }
 
 func ModifyUserPassWordByUserName(username string) error {
@@ -56,7 +54,7 @@ func SearchUserByUserName(username string) *model.User {
 }
 
 func CheckUserName(username string) (*model.User, error) {
-	sqlStr := "select id,username,password,email from users where username=?"
+	sqlStr := "select userid,username,password,email from user where username=?"
 	row := utils.Db.QueryRow(sqlStr, username)
 	user := &model.User{}
 	row.Scan(&user.ID, &user.Username, &user.Password, &user.Email)
@@ -64,7 +62,7 @@ func CheckUserName(username string) (*model.User, error) {
 }
 
 func CheckUserNameAndPassword(username string, password string) (*model.User, error) {
-	sqlStr := "select id,username,password,email from users where username=? and password=?"
+	sqlStr := "select userid,username,password,email from users where username=? and password=?"
 
 	md5Pwd := md5.Sum([]byte(password))
 	strmd5 := hex.EncodeToString(md5Pwd[:])

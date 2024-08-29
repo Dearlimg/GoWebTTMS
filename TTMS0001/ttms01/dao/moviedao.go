@@ -20,7 +20,7 @@ func GetPageMovie(pageNo string) (*model.Page, error) {
 	} else {
 		totalPageNo = totalRecord/pageSize + 1
 	}
-	sql1 := "select * from movie order by score desc limit ?,?"
+	sql1 := "select * from movie where state>0 order by score desc limit ?,?"
 	rows, err := utils.Db.Query(sql1, (iPageNo-1)*pageSize, pageSize)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func GetPageMovie(pageNo string) (*model.Page, error) {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		//fmt.Println(movie)
 		movies = append(movies, movie)
 	}
@@ -48,7 +48,7 @@ func GetAllMovies() (*model.Page, error) {
 	row := utils.Db.QueryRow(sql1)
 	row.Scan(&totalRecord)
 
-	sql := `select * from movie`
+	sql := `select * from movie where state>0`
 	var movies []*model.Movie
 	rows, err := utils.Db.Query(sql)
 	if err != nil {
@@ -56,7 +56,7 @@ func GetAllMovies() (*model.Page, error) {
 	}
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	page := &model.Page{
@@ -67,15 +67,19 @@ func GetAllMovies() (*model.Page, error) {
 }
 
 func GetPageMovieSessionByCinemaName(cinema string) (*model.Page, error) {
-	sql := "select * from movie_session where cinema=?"
+
+	sql1 := "select cinemaid from cinema where cinemaname=?"
+	row := utils.Db.QueryRow(sql1, cinema)
+
+	sql := "select * from moviesession where cinemaid=?"
 	var moviesessions []*model.MovieSession
-	rows, err := utils.Db.Query(sql, cinema)
+	rows, err := utils.Db.Query(sql, row)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
 		moviesession := &model.MovieSession{}
-		rows.Scan(&moviesession.ShowCinema, &moviesession.ShowScreen, &moviesession.ShowTime, &moviesession.ShowMovie, &moviesession.ShowInfo, &moviesession.Price)
+		rows.Scan(&moviesession.MovieSessionId, &moviesession.MovieId, &moviesession.CinemaId, &moviesession.ShowTime, &moviesession.ShowInfo, &moviesession.State, &moviesession.ShowScreen, &moviesession.Price)
 		moviesession.State = moviesession.JudgeState()
 		moviesession.Remaining = moviesession.Count()
 		moviesession.MovieImgPath, _ = GetMovieImgByMovieName(moviesession.ShowMovie)
@@ -91,12 +95,12 @@ func GetMovieInfoByMovieName(movieName string) (*model.Movie, error) {
 	sql := "select * from movie where moviename=?"
 	row := utils.Db.QueryRow(sql, movieName)
 	movie := &model.Movie{}
-	row.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+	row.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 	return movie, nil
 }
 
 func GetMovieImgByMovieName(movieName string) (string, error) {
-	sql := "select img_path from movie where moviename=?"
+	sql := "select imgpath from movie where moviename=?"
 	row := utils.Db.QueryRow(sql, movieName)
 	var imgPath string
 	row.Scan(&imgPath)
@@ -117,7 +121,7 @@ func GetComingMovies(start string, end string, now string) []*model.Movie {
 
 	//fmt.Println(start, end, totalRecord, now)
 
-	sql := "SELECT * FROM movie WHERE showtime > ? ORDER BY showtime ASC LIMIT ?, ?"
+	sql := "SELECT * FROM movie WHERE showtime > ? and state>0 ORDER BY showtime ASC LIMIT ?, ?"
 	rows, err := utils.Db.Query(sql, now, start, end)
 	if err != nil {
 		return nil
@@ -125,7 +129,7 @@ func GetComingMovies(start string, end string, now string) []*model.Movie {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -145,7 +149,7 @@ func GetHotMovies(start string, end string, now string) []*model.Movie {
 
 	//fmt.Println(start, end, totalRecord, now)
 
-	sql := "SELECT * FROM movie WHERE showtime < ? ORDER BY boxoffice DESC LIMIT ?, ?"
+	sql := "SELECT * FROM movie WHERE showtime < ? and state>0 ORDER BY boxoffice DESC LIMIT ?, ?"
 	rows, err := utils.Db.Query(sql, now, start, end)
 	if err != nil {
 		return nil
@@ -153,7 +157,7 @@ func GetHotMovies(start string, end string, now string) []*model.Movie {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -173,7 +177,7 @@ func GetClassicMovies(start string, end string, now string) []*model.Movie {
 
 	//fmt.Println(start, end, totalRecord, now)
 
-	sql := "SELECT * FROM movie WHERE showtime < ? ORDER BY score DESC LIMIT ?, ?"
+	sql := "SELECT * FROM movie WHERE showtime < ? and state>0 ORDER BY score DESC LIMIT ?, ?"
 	rows, err := utils.Db.Query(sql, now, start, end)
 	if err != nil {
 		return nil
@@ -181,7 +185,7 @@ func GetClassicMovies(start string, end string, now string) []*model.Movie {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -200,10 +204,6 @@ func GetMoviesByCondition(genre, region, decade, sort string) []*model.Movie {
 		sql += " AND area=?"
 		args = append(args, region)
 	}
-	if decade != "" {
-		sql += " AND time=?"
-		args = append(args, decade)
-	}
 
 	// 确定排序列
 	if sort != "" {
@@ -219,42 +219,42 @@ func GetMoviesByCondition(genre, region, decade, sort string) []*model.Movie {
 	movies := []*model.Movie{}
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
 }
 
 func GetMovieByKeyWord(keyword string) []*model.Movie {
-	sql := "SELECT * FROM movie WHERE moviename like " + "'%" + keyword + "%'"
+	sql := "SELECT * FROM movie WHERE moviename like " + "'%" + keyword + "%'" + "and state>0"
 	//fmt.Println(sql)
 	rows, _ := utils.Db.Query(sql)
 	movies := []*model.Movie{}
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieName, &movie.ActorName, &movie.Time, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Cinema, &movie.Showtime)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
 }
 
 func SaveMovie(movie *model.Movie) {
-	sql := "insert into movie(moviename,actorname,time,score,boxoffice,genre,area,age,img_path,Duration,cinema,showtime) values (?,?,?,?,?,?,?,?,?,?,?,?)"
-	utils.Db.Exec(sql, movie.MovieName, movie.ActorName, movie.Time, movie.Score, movie.BoxOffice, movie.Genre, movie.Area, movie.Age, movie.ImgPath, movie.Duration, movie.Cinema, movie.Showtime)
+	sql := "insert into movie(movieid,moviename,actorname,showtime,score,boxoffice,genre,area,imgpath,Duration,introduction,state) values (?,?,?,?,?,?,?,?,?,?,?,?)"
+	utils.Db.Exec(sql, movie.MovieId, movie.MovieName, movie.ActorName, movie.Showtime, movie.Score, movie.BoxOffice, movie.Genre, movie.Area, movie.ImgPath, movie.Duration, movie.Introduction, movie.State)
 }
 
 func DeleteMovieByMovieName(moviename string) {
-	sql := "delete from movie where moviename = ?"
+	sql := "update movie set state=0 where moviename=?"
 	utils.Db.Exec(sql, moviename)
 }
 
-func UpdateMovieByMovieName(movie *model.Movie, moviename string) {
-	sql := "update movie set moviename=? , actorname=? , time=? , score=? , boxoffice=? , genre=? , area=? , age=? ,img_path=? , Duration=? , showtime=? where moviename = ?"
-	utils.Db.Exec(sql, movie.MovieName, movie.ActorName, movie.Time, movie.Score, movie.BoxOffice, movie.Genre, movie.Area, movie.Age, movie.ImgPath, movie.Duration, movie.Showtime, moviename)
-}
+//func UpdateMovieByMovieName(movie *model.Movie, moviename string) {
+//	sql := "update movie set movieid=? moviename=? , actorname=? , showtime=? , score=? , boxoffice=? , genre=? , area=? ,imgpath=? , duration=? , introduction where moviename = ?"
+//	utils.Db.Exec(sql, movie.MovieId, movie.MovieName, movie.ActorName, movie.Showtime, movie.Score, movie.BoxOffice, movie.Genre, movie.Area, movie.ImgPath, movie.Duration, movie.Introduction, movie.State)
+//}
 
 func GetIntroductionByMovieName(moviename string) *model.Introduction {
-	sql := "select * from introduce where movie = ?"
+	sql := "select introduction from movie where moviename = ?"
 	row := utils.Db.QueryRow(sql, moviename)
 	res := &model.Introduction{}
 	row.Scan(&res.MovieName, &res.Intro)

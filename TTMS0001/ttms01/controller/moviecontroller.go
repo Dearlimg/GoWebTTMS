@@ -11,6 +11,7 @@ import (
 )
 
 func GetPageMovie(w http.ResponseWriter, r *http.Request) {
+	//fmt.Println("start1")
 	pageNo := r.FormValue("pageNo")
 	if pageNo == "" {
 		pageNo = "1"
@@ -19,16 +20,14 @@ func GetPageMovie(w http.ResponseWriter, r *http.Request) {
 
 	now := time.Now()
 
-	// 定义格式化模板
-	format := "2006-01-02-15:04" // 24小时制，小时范围是0-23
+	format := "2006-01-02 15:04" // 24小时制，小时范围是0-23
 
-	// 格式化时间
 	formattedTime := now.Format(format)
 
-	page.ComingMovies = dao.GetComingMovies("", "6", formattedTime)
+	page.ComingMovies = dao.GetComingMovies("0", "6", formattedTime)
 	page.Movies = dao.GetHotMovies("", "6", formattedTime)
 	page.ClassicMovies = dao.GetClassicMovies("", "6", formattedTime)
-
+	//fmt.Println("start2")
 	flag, session := dao.IsLogin(r)
 	if flag {
 		page.IsLogin = true
