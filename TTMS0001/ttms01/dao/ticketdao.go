@@ -158,7 +158,7 @@ func ModifySessionInfo(sessioninfo string, seat string, way string) string {
 
 func GetAllTickets() []model.Ticket {
 	//sql := "select * from tickets"
-	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join ticket.userid=user.userid where user.username=?"
+	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid "
 	rows, _ := utils.Db.Query(sql0)
 	defer rows.Close()
 	tickets := []model.Ticket{}
@@ -168,4 +168,18 @@ func GetAllTickets() []model.Ticket {
 		tickets = append(tickets, ticket)
 	}
 	return tickets
+	//sql := "select ticket.owner,moviesession.cinemaid,moviesession.screenroom,ticket.seat,moviesession.showtime,moviesession.movieid,moviesession.price from ticket join newttms.moviesession on moviesession.moviesessionid=ticket.moviesessionid where ticket.owner=?"
+	//rows, err := utils.Db.Query(sql, username)
+	//if err != nil {
+	//	return nil
+	//}
+	//defer rows.Close()
+	//tickets := []model.Ticket{}
+	//for rows.Next() {
+	//	ticket := model.Ticket{}
+	//	rows.Scan(&ticket.Owner, &ticket.Cinema, &ticket.Screen, &ticket.Seat, &ticket.Time, &ticket.Movie, &ticket.Price)
+	//	tickets = append(tickets, ticket)
+	//}
+	////fmt.Println("GetTicketsByName", tickets)
+	//return tickets
 }

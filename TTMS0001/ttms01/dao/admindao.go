@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"fmt"
 	"ttms01/model"
 	"ttms01/utils"
 )
@@ -14,6 +15,7 @@ func CheckAdmin(username string, password string) (*model.User, error) {
 }
 
 func IsAdmin(username string) bool {
+	fmt.Println(" IsAdmin", username)
 	sql := "select * from admin where adminname=?"
 	//fmt.Println("cinemasearch3.54")
 	row := utils.Db.QueryRow(sql, username)
@@ -25,5 +27,4 @@ func IsAdmin(username string) bool {
 	} else {
 		return false
 	}
-
 }

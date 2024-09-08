@@ -98,7 +98,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				UserID:    admin.ID,
 			}
 
-			dao.AddSession(sess)
+			//dao.AddSession(sess)
+			dao.AddAdminSession(sess)
 			cookie := http.Cookie{
 				Name:     "user",
 				Value:    uuid,
@@ -112,12 +113,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			//测试
 			//GetPageMovie(w, r)
 
-			page.IsLogin = true
-			if dao.IsAdmin(page.Username) {
-				page.IsAdmin = true
-			} else {
-				page.IsAdmin = false
-			}
+			//page.IsLogin = true
+			//if dao.IsAdmin(page.Username) {
+			//	page.IsAdmin = true
+			//} else {
+			//	page.IsAdmin = false
+			//}
 
 			now := time.Now()
 

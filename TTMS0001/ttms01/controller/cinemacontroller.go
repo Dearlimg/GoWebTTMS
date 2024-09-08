@@ -110,45 +110,131 @@ func AddMovieSession1(w http.ResponseWriter, r *http.Request) {
 		ShowInfo:   "00000000000000000000",
 	}
 
-	Price, _ := strconv.ParseFloat(r.FormValue("price"), 64)
-	//fmt.Println("测试1", moviesession.ShowCinema, moviesession.ShowScreen)
-	allmoviesession, _ := dao.GetMoviesessionByCinemaAndScreen(moviesession.ShowCinema, moviesession.ShowScreen)
+	Price, err := strconv.ParseFloat(r.FormValue("price"), 64)
+	if err != nil {
+		http.Error(w, "Invalid price", http.StatusBadRequest)
+		return
+	}
+	moviesession.Price = Price
+
+	// Query to get cinemaid
+	var cinemaId string
+	sql01 := "SELECT cinemaid FROM cinema WHERE cinemaname = ?"
+	err = utils.Db.QueryRow(sql01, moviesession.ShowCinema).Scan(&cinemaId)
+	if err != nil {
+		http.Error(w, "Cinema not found", http.StatusNotFound)
+		return
+	}
+	moviesession.CinemaId = cinemaId
+
+	// Check for conflicting movie sessions
+	allmoviesession, err := dao.GetMoviesessionByCinemaAndScreen(moviesession.ShowCinema, moviesession.ShowScreen)
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+
 	flag := -1
 	for _, v := range allmoviesession {
-		//res, _ := utils.IsWithinRange(moviesession.ShowTime, v.ShowTime, v.GetMovieDuration(moviesession.ShowMovie))
 		res, _ := utils.IsWithinRange(moviesession.ShowTime, v.ShowTime, "180")
-		fmt.Println("AddMovieSession1:", moviesession.ShowTime, v.ShowTime, v.GetMovieDuration(moviesession.ShowMovie), res)
-		if res == true {
+		if res {
 			flag = 1
+			break
 		}
 	}
+
+	// Get movieId
+	var movieId string
+	err = utils.Db.QueryRow("SELECT movieid FROM movie WHERE moviename = ?", moviesession.ShowMovie).Scan(&movieId)
+	if err != nil {
+		http.Error(w, "Movie not found", http.StatusNotFound)
+		return
+	}
+	moviesession.MovieId = movieId
+
+	// Save movie session or return conflict message
 	if flag == -1 {
-		moviesession.Price = Price
 		moviesession.Remaining = moviesession.Count()
-		//fmt.Println(moviesession)
-		dao.SaveMovieSession(moviesession)
+		if err := dao.SaveMovieSession(moviesession); err != nil {
+			http.Error(w, "Failed to save session", http.StatusInternalServerError)
+			return
+		}
 		GetPageMovie(w, r)
 	} else {
-		moviename := moviesession.ShowMovie
-
-		//
-
-		//
-
-		moviesession := &model.MovieSession{
-			ShowMovie:  moviename,
-			ShowCinema: moviesession.ShowCinema,
-			ShowScreen: moviesession.ShowScreen,
-			Price:      Price,
-		}
 		page := &model.Page{
-			ShowSession1: moviesession,
+			ShowSession1: &model.MovieSession{
+				ShowMovie:  moviesession.ShowMovie,
+				ShowCinema: moviesession.ShowCinema,
+				ShowScreen: moviesession.ShowScreen,
+				Price:      Price,
+			},
+			Message: "时间冲突",
 		}
-		page.Message = "时间冲突"
 		t := template.Must(template.ParseFiles("views/pages/admin/addmoviesession.html"))
-		t.Execute(w, page)
+		if err := t.Execute(w, page); err != nil {
+			http.Error(w, "Template execution failed", http.StatusInternalServerError)
+		}
 	}
 }
+
+//func AddMovieSession1(w http.ResponseWriter, r *http.Request) {
+//	moviesession := &model.MovieSession{
+//		ShowMovie:  r.FormValue("movie"),
+//		ShowCinema: r.FormValue("cinema"),
+//		ShowScreen: r.FormValue("hall"),
+//		ShowTime:   r.FormValue("time"),
+//		ShowInfo:   "00000000000000000000",
+//	}
+//	fmt.Println("AddMovieSession0")
+//	Price, _ := strconv.ParseFloat(r.FormValue("price"), 64)
+//	//fmt.Println("测试1", moviesession.ShowCinema, moviesession.ShowScreen)
+//	fmt.Println("AddMovieSession0.1")
+//	allmoviesession, _ := dao.GetMoviesessionByCinemaAndScreen(moviesession.ShowCinema, moviesession.ShowScreen)
+//
+//	fmt.Println("AddMovieSession1")
+//	flag := -1
+//	for _, v := range allmoviesession {
+//		//res, _ := utils.IsWithinRange(moviesession.ShowTime, v.ShowTime, v.GetMovieDuration(moviesession.ShowMovie))
+//		res, _ := utils.IsWithinRange(moviesession.ShowTime, v.ShowTime, "180")
+//		fmt.Println("AddMovieSession1:", moviesession.ShowTime, v.ShowTime, v.GetMovieDuration(moviesession.ShowMovie), res)
+//		if res == true {
+//			flag = 1
+//		}
+//	}
+//
+//	sql0 := "select movieid from movie where moviename=?"
+//	utils.Db.QueryRow(sql0, moviesession.ShowMovie)
+//
+//	fmt.Println("AddMovieSession2")
+//	if flag == -1 {
+//		moviesession.Price = Price
+//		moviesession.Remaining = moviesession.Count()
+//		fmt.Println("adwadawdawdawwadaw", moviesession.MovieId)
+//		dao.SaveMovieSession(moviesession)
+//		fmt.Println("AddMovieSession3")
+//		GetPageMovie(w, r)
+//	} else {
+//		moviename := moviesession.ShowMovie
+//
+//		//
+//
+//		//
+//
+//		moviesession := &model.MovieSession{
+//			ShowMovie:  moviename,
+//			ShowCinema: moviesession.ShowCinema,
+//			ShowScreen: moviesession.ShowScreen,
+//			Price:      Price,
+//		}
+//		fmt.Println("AddMovieSession4")
+//		page := &model.Page{
+//			ShowSession1: moviesession,
+//		}
+//		page.Message = "时间冲突"
+//		t := template.Must(template.ParseFiles("views/pages/admin/addmoviesession.html"))
+//		t.Execute(w, page)
+//	}
+//}
 
 func AddCinema(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.ParseFiles("views/pages/admin/addcinema.html"))

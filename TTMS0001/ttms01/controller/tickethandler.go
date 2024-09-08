@@ -32,7 +32,7 @@ func BuyTicket(w http.ResponseWriter, r *http.Request) {
 
 	page, _ := dao.GetMovieSessionByMovieId(movieinfo.MovieId)
 
-	fmt.Println("BuyTicket1")
+	fmt.Println("BuyTicket1", movieinfo.MovieId)
 
 	page.Movie = movieinfo
 	//page.IsLogin = true
@@ -172,12 +172,13 @@ func Bill(w http.ResponseWriter, r *http.Request) {
 }
 func ShowTickets(w http.ResponseWriter, r *http.Request) {
 	_, session := dao.IsLogin(r)
+	fmt.Println("showtickets1")
 	page := &model.Page{
 		IsLogin:  true,
 		Username: session.UserName,
 	}
-
 	if dao.IsAdmin(page.Username) {
+		fmt.Println("showtickets2")
 		page.IsAdmin = true
 		tickets := dao.GetAllTickets()
 		page.Tickets = tickets
