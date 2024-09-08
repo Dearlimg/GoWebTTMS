@@ -16,17 +16,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user.Password = r.FormValue("password")
 	user.Email = r.FormValue("email")
 	checkuser, _ := dao.CheckUserName(user.Username)
-
+	fmt.Println("checkuser1")
 	if checkuser.ID > 0 {
 		t := template.Must(template.ParseFiles("views/pages/user/register.html"))
+		fmt.Println("checkuser2")
 		t.Execute(w, nil)
 	} else {
 		t := template.Must(template.ParseFiles("views/pages/user/login.html"))
 		dao.AddUser(user)
-		//page, _ := dao.GetPageMovie("1")
-		//page.IsLogin = true
-		//page.Username = user.Username
-		t.Execute(w, nil)
+		page, _ := dao.GetPageMovie("1")
+		page.IsLogin = true
+		fmt.Println("checkuser3")
+		page.Username = user.Username
+		t.Execute(w, page)
 	}
 }
 
@@ -68,10 +70,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 //}
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("login1")
 	flag, _ := dao.IsLogin(r)
 	page, _ := dao.GetPageMovie("1")
 	page.Username = r.FormValue("username")
 	if flag {
+		fmt.Println("fakelogin2")
 		page.IsLogin = true
 		if dao.IsAdmin(page.Username) {
 			page.IsAdmin = true
@@ -81,10 +85,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		t := template.Must(template.ParseFiles("views/pages/login.html"))
 		t.Execute(w, page)
 	} else {
+		fmt.Println("login2")
 		username := r.PostFormValue("username")
 		password := r.PostFormValue("password")
 		admin, _ := dao.CheckAdmin(username, password)
 		if admin.ID > 0 {
+			fmt.Println("login3")
 			uuid := utils.CreatUUID()
 			sess := &model.Session{
 				SessionID: uuid,
@@ -98,6 +104,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				Value:    uuid,
 				HttpOnly: true,
 			}
+			fmt.Println("login4")
 			http.SetCookie(w, &cookie)
 			//fmt.Println("登录成功")
 			page.IsLogin = true
@@ -130,27 +137,29 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			_ = t.Execute(w, page)
 		} else {
 			user, _ := dao.CheckUserNameAndPassword(username, password)
+			fmt.Println("loginn1")
 			if user.ID > 0 {
-
 				uuid := utils.CreatUUID()
 				sess := &model.Session{
 					SessionID: uuid,
 					UserName:  username,
 					UserID:    user.ID,
 				}
-
+				fmt.Println("loginn1,1")
 				dao.AddSession(sess)
 				cookie := http.Cookie{
 					Name:     "user",
 					Value:    uuid,
 					HttpOnly: true,
 				}
+				fmt.Println("loginn1.2")
 				http.SetCookie(w, &cookie)
 				//fmt.Println("登录成功")
 				page.IsLogin = true
 				page.IsAdmin = false
 
 				//
+				fmt.Println("loginn2")
 
 				now := time.Now()
 
@@ -168,6 +177,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				t := template.Must(template.ParseFiles("views/index.html"))
 				_ = t.Execute(w, page)
 			} else {
+				fmt.Println("loginn4.1")
 				page.IsLogin = false
 				t := template.Must(template.ParseFiles("views/pages/user/login.html"))
 				t.Execute(w, nil)
@@ -251,7 +261,7 @@ func SubmitComment(w http.ResponseWriter, r *http.Request) {
 
 	Comment := &model.Comment{
 		Speaker: speaker,
-		Comment: comment,
+		Word:    comment,
 		Time:    string(time.Format("2006-01-02-15:04:05")),
 		Movie:   moviename,
 		At:      At,
@@ -262,7 +272,7 @@ func SubmitComment(w http.ResponseWriter, r *http.Request) {
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	Comment := &model.Comment{
-		Comment: r.FormValue("comment"),
+		Word:    r.FormValue("comment"),
 		Time:    r.FormValue("time"),
 		Movie:   r.FormValue("movie"),
 		Speaker: r.FormValue("speaker"),

@@ -11,7 +11,11 @@ func AddComment(Comment *model.Comment) {
 }
 
 func GetCommentsByMovieName(moviename string) []*model.Comment {
-	sql := "select * from comment where movie=?"
+	//sql0 := "select movieid from comment where moviename = ?"
+	//row0 := utils.Db.QueryRow(sql0, moviename)
+	//fmt.Println(&row0)
+
+	sql := "select movie.moviename,user.username,comment.time,comment.word,user.username from comment join user on user.userid=comment.userid join movie on movie.movieid=comment.movieid where comment.movieid=?"
 	comments := []*model.Comment{}
 	rows, _ := utils.Db.Query(sql, moviename)
 	for rows.Next() {

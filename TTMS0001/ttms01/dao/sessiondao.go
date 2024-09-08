@@ -1,13 +1,15 @@
 package dao
 
 import (
+	"fmt"
 	"net/http"
 	"ttms01/model"
 	"ttms01/utils"
 )
 
 func AddSession(sess *model.Session) error {
-	sqlStr := "insert into session(userid,state,session) values (?,1,?)"
+	sqlStr := "insert into session(userid,state,session) values (7,1,?)"
+	fmt.Println("AddSession", sess.UserID, sess.SessionID)
 	_, err := utils.Db.Exec(sqlStr, sess.UserID, sess.SessionID)
 	if err != nil {
 		return err
@@ -29,6 +31,13 @@ func GetSession(sessionID string) (*model.Session, error) {
 	row := inStmt.QueryRow(sessionID)
 	session := &model.Session{}
 	row.Scan(&session.SessionID, &session.UserID, &session.State, &session.Session)
+
+	sql0 := "select username from user where userid=?"
+	row0 := utils.Db.QueryRow(sql0, session.UserID)
+	var username string
+	row0.Scan(&username)
+	session.UserName = username
+
 	return session, nil
 }
 

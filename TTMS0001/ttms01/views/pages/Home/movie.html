@@ -89,13 +89,13 @@
     {{range .Movies}}
     <div class="movie">
         <h2>{{.MovieName}}</h2>
-        <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Time={{.Time}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
+        <a href="/buyticket?MovieName={{.MovieName}}&ActorName={{.ActorName}}&Showtime={{.Showtime}}&Score={{.Score}}&BoxOffice={{.BoxOffice}}&Genre={{.Genre}}&Area={{.Area}}&Age={{.Age}}&ImgPath={{.ImgPath}}&Duration={{.Duration}}">
             <img src="{{.ImgPath}}" alt="Book1">
         </a>
         <p>类型: {{.Genre}}</p>
         <p>区域: {{.Area}}</p>
-        <p>年代: {{.Time}}</p>
-{{/*        <p>上映时间: {{.ShowTime}}</p>*/}}
+{{/*        <p>年代: {{.Time}}</p>*/}}
+        <p>上映时间: {{.Showtime}}</p>
         <p>票房: {{.BoxOffice}}</p>
         <p>评分: {{.Score}}</p>
         {{if $.IsAdmin}}

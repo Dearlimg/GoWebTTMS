@@ -32,34 +32,71 @@ import (
 //	return page, nil
 //}
 
+//func GetAllCinema() (*model.Page, error) {
+//	sql1 := "select count(*) from cinema"
+//	var totalRecord int64
+//	row := utils.Db.QueryRow(sql1)
+//	row.Scan(&totalRecord)
+//
+//	//fmt.Println(totalRecord)
+//	sql := "select cinema(cinemaname,place,cinemarank) from cinema where state=1"
+//	var cinemas []*model.Cinema
+//	rows, err := utils.Db.Query(sql)
+//	if err != nil {
+//		return nil, err
+//	}
+//	for rows.Next() {
+//		cinema := &model.Cinema{}
+//		rows.Scan(&cinema.CinemaName, &cinema.Place, &cinema.Rank)
+//		fmt.Println(cinema)
+//		cinemas = append(cinemas, cinema)
+//	}
+//	page := &model.Page{
+//		Cinema:      cinemas,
+//		TotalRecord: totalRecord,
+//	}
+//	//fmt.Println(cinemas[0].CinemaName, "MEYOUMNA")
+//	return page, nil
+//}
+
 func GetAllCinema() (*model.Page, error) {
-	sql1 := "select count(*) from cinema"
+	sql1 := "SELECT COUNT(*) FROM cinema"
 	var totalRecord int64
 	row := utils.Db.QueryRow(sql1)
-	row.Scan(&totalRecord)
+	if err := row.Scan(&totalRecord); err != nil {
+		return nil, err
+	}
 
-	//fmt.Println(totalRecord)
-	sql := "select cinema(cinemaname,place,cinemarank) from cinema"
+	sql := "SELECT cinemaname, place, cinemarank FROM cinema WHERE state = 1"
 	var cinemas []*model.Cinema
 	rows, err := utils.Db.Query(sql)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close() // 确保 rows 资源在函数结束时被关闭
+
 	for rows.Next() {
 		cinema := &model.Cinema{}
-		rows.Scan(&cinema.CinemaName, &cinema.Place, &cinema.Rank)
+		if err := rows.Scan(&cinema.CinemaName, &cinema.Place, &cinema.Rank); err != nil {
+			return nil, err
+		}
 		cinemas = append(cinemas, cinema)
 	}
+
+	// 检查 rows.Err() 以确保没有错误
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	page := &model.Page{
 		Cinema:      cinemas,
 		TotalRecord: totalRecord,
 	}
-	//fmt.Println(cinemas[0].CinemaName, "MEYOUMNA")
 	return page, nil
 }
 
 func GetCinemaByCondition(area string, rank string) []*model.Cinema {
-	sql := "select cinema(cinemaname,price,cinemarank) from cinema where 1 = 1"
+	sql := "SELECT cinemaname, place, cinemarank FROM cinema WHERE state = 1"
 	var args []interface{}
 
 	if area != "" {

@@ -13,8 +13,6 @@ import (
 func CinemaSearch(w http.ResponseWriter, r *http.Request) {
 	district := r.FormValue("district")
 	rank := r.FormValue("rank")
-	//fmt.Println(district, rank)
-
 	if district != "" || rank != "" {
 		page := &model.Page{
 			Cinema: dao.GetCinemaByCondition(district, rank),
@@ -33,17 +31,26 @@ func CinemaSearch(w http.ResponseWriter, r *http.Request) {
 		t := template.Must(template.ParseFiles("views/pages/Home/cinema.html"))
 		t.Execute(w, page)
 	} else {
+		//fmt.Println("cinemasearch2")
 		page, _ := dao.GetAllCinema()
 		flag, session := dao.IsLogin(r)
+		//fmt.Println("cinemasearch2.1")
 		if flag {
 			page.IsLogin = true
 			page.Username = session.UserName
 		}
-		if dao.IsAdmin(page.Username) {
-			page.IsAdmin = true
-		} else {
-			page.IsAdmin = false
+		//fmt.Println("cinemasearch2.2", page)
+		//fmt.Println("cinemasearch3", page.Username)
+		if page.Username != "" {
+			//fmt.Println("cinemasearch3.1")
+			if dao.IsAdmin(page.Username) {
+				page.IsAdmin = true
+			} else {
+				page.IsAdmin = false
+			}
 		}
+
+		//fmt.Println("cinemasearch4")
 		//fmt.Println(page.Cinema[0].CinemaName, "dwawda")
 		t := template.Must(template.ParseFiles("views/pages/Home/cinema.html"))
 		t.Execute(w, page)
@@ -82,11 +89,6 @@ func ChoiceScreenRoom(w http.ResponseWriter, r *http.Request) {
 
 func AddMovieSession(w http.ResponseWriter, r *http.Request) {
 	moviename := r.FormValue("Moviename")
-
-	//
-
-	//
-
 	moviesession := &model.MovieSession{
 		ShowMovie:  moviename,
 		ShowCinema: r.FormValue("cinemaname"),

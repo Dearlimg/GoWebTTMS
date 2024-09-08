@@ -9,13 +9,11 @@ import (
 )
 
 func BackOfficeManagement(w http.ResponseWriter, r *http.Request) {
-
 	t := template.Must(template.ParseFiles("views/pages/admin/management.html"))
 	t.Execute(w, nil)
 }
 
 func AdminModifyMovie(w http.ResponseWriter, r *http.Request) {
-
 	t := template.Must(template.ParseFiles("views/pages/admin/modifymovie.html"))
 	t.Execute(w, nil)
 }

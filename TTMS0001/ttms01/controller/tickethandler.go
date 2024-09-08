@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -13,20 +14,25 @@ import (
 func BuyTicket(w http.ResponseWriter, r *http.Request) {
 	movieinfo := &model.Movie{}
 
+	movieinfo.MovieId = r.FormValue("MovieId")
 	movieinfo.MovieName = r.FormValue("MovieName")
 	movieinfo.ActorName = r.FormValue("ActorName")
-	movieinfo.Time = r.FormValue("Time")
+	movieinfo.Showtime = r.FormValue("Showtime")
 	corestr := r.FormValue("Score")
 	movieinfo.Score, _ = strconv.ParseFloat(corestr, 64)
 	BoxOfficeStr := r.FormValue("BoxOffice")
 	movieinfo.BoxOffice, _ = strconv.ParseInt(BoxOfficeStr, 10, 64)
 	movieinfo.Genre = r.FormValue("Genre")
 	movieinfo.Area = r.FormValue("Area")
-	movieinfo.Age = r.FormValue("Age")
 	movieinfo.ImgPath = r.FormValue("ImgPath")
 	movieinfo.Duration = r.FormValue("Duration")
+	movieinfo.Introduction = r.FormValue("Introduction")
 
-	page, _ := dao.GetMovieSessionByMovieName(movieinfo.MovieName)
+	fmt.Println(movieinfo)
+
+	page, _ := dao.GetMovieSessionByMovieId(movieinfo.MovieId)
+
+	fmt.Println("BuyTicket1")
 
 	page.Movie = movieinfo
 	//page.IsLogin = true
@@ -40,7 +46,7 @@ func BuyTicket(w http.ResponseWriter, r *http.Request) {
 	} else {
 		page.IsLogin = false
 	}
-
+	fmt.Println("BuyTicket2")
 	if dao.IsAdmin(page.Username) {
 		page.IsAdmin = true
 	} else {
@@ -49,13 +55,14 @@ func BuyTicket(w http.ResponseWriter, r *http.Request) {
 
 	introduction := dao.GetIntroductionByMovieName(movieinfo.MovieName)
 	//fmt.Println(introduction, movieinfo.MovieName)
-
+	//fmt.Println(introduction)
 	page.Introductions = introduction
-
-	comments := dao.GetCommentsByMovieName(movieinfo.MovieName)
+	fmt.Println("BuyTicket3")
+	comments := dao.GetCommentsByMovieName(movieinfo.MovieId)
 	//fmt.Println(comments)
 	page.Comments = comments
 	//fmt.Println(page.ShowSession)
+	fmt.Println("BuyTicket4")
 	t := template.Must(template.ParseFiles("views/pages/trade/showinfo.html"))
 	t.Execute(w, page)
 }
@@ -70,6 +77,7 @@ func Buy(w http.ResponseWriter, r *http.Request) {
 	movie_session.Price, _ = strconv.ParseFloat(r.FormValue("Price"), 64)
 
 	nums, _ := dao.ParseInfo(movie_session.ShowInfo)
+	//fmt.Println(nums)
 	//page, _ := dao.GetPageMovieByCinemaName(movie_session.ShowMovie)
 	movie, _ := dao.GetMovieInfoByMovieName(movie_session.ShowMovie)
 	page := &model.Page{}
@@ -98,6 +106,7 @@ func Bill(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < 20; i++ {
 		istr := strconv.Itoa(i)
 		flag := r.FormValue("seat" + istr)
+		fmt.Println("flag", flag)
 		if flag == "0" {
 			flag = "1"
 		} else if flag == "1" {
@@ -107,7 +116,11 @@ func Bill(w http.ResponseWriter, r *http.Request) {
 		}
 		finstr = finstr + flag
 	}
+
+	fmt.Println(finstr)
+
 	Price1, _ := strconv.ParseFloat(r.FormValue("Price"), 64)
+
 	moviesession := &model.MovieSession{
 		ShowCinema: r.FormValue("ShowCinema"),
 		ShowScreen: r.FormValue("ShowScreen"),
@@ -116,6 +129,8 @@ func Bill(w http.ResponseWriter, r *http.Request) {
 		ShowInfo:   r.FormValue("ShowInfo"),
 		Price:      Price1,
 	}
+
+	fmt.Println("Bill1", moviesession.ShowCinema)
 
 	_ = dao.SaveData(finstr, moviesession)
 
@@ -137,7 +152,7 @@ func Bill(w http.ResponseWriter, r *http.Request) {
 
 	packed := utils.PackTicketData(nums)
 	realseat := utils.ParseTicketData(packed)
-
+	fmt.Println("Bill", realseat)
 	buyer := r.FormValue("owner")
 
 	ticket := &model.Ticket{
@@ -170,6 +185,7 @@ func ShowTickets(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, page)
 	} else {
 		page.IsAdmin = false
+		fmt.Println("ShowTickets", session.UserName)
 		tickets, _ := dao.GetTicketsByName(session.UserName)
 		page.Tickets = tickets
 
@@ -192,9 +208,9 @@ func ReturnTicket(w http.ResponseWriter, r *http.Request) {
 
 	dao.DeleteTicketByAllInfo(ticket)
 
-	moviesession, _ := dao.GetMovieSessionByTicket(ticket)
-	modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, ticket.Seat, "sell")
-	dao.ModifyShowSessionSeat(moviesession, modifedinfo)
+	//moviesession, _ := dao.GetMovieSessionByTicket(ticket)
+	//modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, ticket.Seat, "sell")
+	//dao.ModifyShowSessionSeat(moviesession, modifedinfo)
 
 	ShowTickets(w, r)
 }
@@ -241,15 +257,15 @@ func ModifyTicket1(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("6 old", oldseats)
 
 	if len(oldseats) > len(newseat) {
-		res := strings.Replace(oldseats, newseat, "", 1)
-		modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, res, "sell")
+		//res := strings.Replace(oldseats, newseat, "", 1)
+		//modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, res, "sell")
 		//fmt.Println(modifedinfo)
-		dao.ModifyShowSessionSeat(moviesession, modifedinfo)
+		//dao.ModifyShowSessionSeat(moviesession, modifedinfo)
 	} else {
-		res := strings.Replace(newseat, oldseats, "", 1)
-		modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, res, "buy")
+		//res := strings.Replace(newseat, oldseats, "", 1)
+		//modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, res, "buy")
 		//fmt.Println(modifedinfo)
-		dao.ModifyShowSessionSeat(moviesession, modifedinfo)
+		//dao.ModifyShowSessionSeat(moviesession, modifedinfo)
 	}
 	GetPageMovie(w, r)
 }

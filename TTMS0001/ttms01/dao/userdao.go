@@ -8,7 +8,7 @@ import (
 )
 
 func AddUser(user model.User) error {
-	sql := "insert into users(username,password,email,state) values(?,?,?,1)"
+	sql := "insert into user(username,password,email,state) values(?,?,?,1)"
 
 	md5Pwd := md5.Sum([]byte(user.Password))
 	strmd5 := hex.EncodeToString(md5Pwd[:])
@@ -62,7 +62,7 @@ func CheckUserName(username string) (*model.User, error) {
 }
 
 func CheckUserNameAndPassword(username string, password string) (*model.User, error) {
-	sqlStr := "select userid,username,password,email from users where username=? and password=?"
+	sqlStr := "select userid,username,password,email from user where username=? and password=?"
 
 	md5Pwd := md5.Sum([]byte(password))
 	strmd5 := hex.EncodeToString(md5Pwd[:])

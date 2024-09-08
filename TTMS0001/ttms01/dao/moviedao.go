@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"fmt"
 	"strconv"
 	"ttms01/model"
 	"ttms01/utils"
@@ -56,7 +57,8 @@ func GetAllMovies() (*model.Page, error) {
 	}
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		fmt.Println("GetAllMovies", movie)
 		movies = append(movies, movie)
 	}
 	page := &model.Page{
@@ -95,7 +97,7 @@ func GetMovieInfoByMovieName(movieName string) (*model.Movie, error) {
 	sql := "select * from movie where moviename=?"
 	row := utils.Db.QueryRow(sql, movieName)
 	movie := &model.Movie{}
-	row.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+	row.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 	return movie, nil
 }
 
@@ -129,7 +131,8 @@ func GetComingMovies(start string, end string, now string) []*model.Movie {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		fmt.Println(movie)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -147,7 +150,7 @@ func GetHotMovies(start string, end string, now string) []*model.Movie {
 		end = strconv.Itoa(totalRecord)
 	}
 
-	//fmt.Println(start, end, totalRecord, now)
+	fmt.Println(start, end, totalRecord, now)
 
 	sql := "SELECT * FROM movie WHERE showtime < ? and state>0 ORDER BY boxoffice DESC LIMIT ?, ?"
 	rows, err := utils.Db.Query(sql, now, start, end)
@@ -157,7 +160,8 @@ func GetHotMovies(start string, end string, now string) []*model.Movie {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		fmt.Println(movie)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -185,14 +189,14 @@ func GetClassicMovies(start string, end string, now string) []*model.Movie {
 	var movies []*model.Movie
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		fmt.Println(movie)
 		movies = append(movies, movie)
 	}
 	return movies
 }
 
 func GetMoviesByCondition(genre, region, decade, sort string) []*model.Movie {
-
 	sql := "SELECT * FROM movie WHERE 1=1"
 	var args []interface{}
 
@@ -219,7 +223,7 @@ func GetMoviesByCondition(genre, region, decade, sort string) []*model.Movie {
 	movies := []*model.Movie{}
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -232,7 +236,7 @@ func GetMovieByKeyWord(keyword string) []*model.Movie {
 	movies := []*model.Movie{}
 	for rows.Next() {
 		movie := &model.Movie{}
-		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.Age, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
+		rows.Scan(&movie.MovieId, &movie.MovieName, &movie.ActorName, &movie.Showtime, &movie.Score, &movie.BoxOffice, &movie.Genre, &movie.Area, &movie.ImgPath, &movie.Duration, &movie.Introduction, &movie.State)
 		movies = append(movies, movie)
 	}
 	return movies
@@ -257,6 +261,6 @@ func GetIntroductionByMovieName(moviename string) *model.Introduction {
 	sql := "select introduction from movie where moviename = ?"
 	row := utils.Db.QueryRow(sql, moviename)
 	res := &model.Introduction{}
-	row.Scan(&res.MovieName, &res.Intro)
+	row.Scan(&res.Intro)
 	return res
 }

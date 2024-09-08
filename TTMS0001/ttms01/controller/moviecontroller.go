@@ -69,6 +69,7 @@ func MovieSearch(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, page)
 	} else {
 		page, _ := dao.GetAllMovies()
+		fmt.Println("MovieSearch1")
 		flag, session := dao.IsLogin(r)
 		if flag {
 			page.IsLogin = true
@@ -118,14 +119,13 @@ func AddMovie1(w http.ResponseWriter, r *http.Request) {
 	movie := &model.Movie{
 		MovieName: r.FormValue("moviename"),
 		ActorName: r.FormValue("actorname"),
-		Time:      r.FormValue("time"),
+		Showtime:  r.FormValue("Showtime"),
 		Genre:     r.FormValue("genre"),
 		Area:      r.FormValue("area"),
 		Age:       r.FormValue("age"),
 		ImgPath:   r.FormValue("img_path"),
 		Duration:  r.FormValue("Duration"),
-		Cinema:    r.FormValue("cinema"),
-		Showtime:  r.FormValue("showtime"),
+		//Cinema:    r.FormValue("cinema"),
 	}
 	movie.Score, _ = strconv.ParseFloat(r.FormValue("score"), 64)
 	movie.BoxOffice, _ = strconv.ParseInt(r.FormValue("boxoffice"), 10, 64)
@@ -144,17 +144,15 @@ func ModifyMovie(w http.ResponseWriter, r *http.Request) {
 
 	movieinfo.MovieName = r.FormValue("MovieName")
 	movieinfo.ActorName = r.FormValue("ActorName")
-	movieinfo.Time = r.FormValue("Time")
+	movieinfo.Showtime = r.FormValue("Showtime")
 	corestr := r.FormValue("Score")
 	movieinfo.Score, _ = strconv.ParseFloat(corestr, 64)
 	BoxOfficeStr := r.FormValue("BoxOffice")
 	movieinfo.BoxOffice, _ = strconv.ParseInt(BoxOfficeStr, 10, 64)
 	movieinfo.Genre = r.FormValue("Genre")
 	movieinfo.Area = r.FormValue("Area")
-	movieinfo.Age = r.FormValue("Age")
 	movieinfo.ImgPath = r.FormValue("ImgPath")
 	movieinfo.Duration = r.FormValue("Duration")
-	movieinfo.Showtime = r.FormValue("ShowTime")
 	fmt.Println(movieinfo.Showtime)
 	page := &model.Page{
 		Movie: movieinfo,
@@ -168,18 +166,17 @@ func ModifyMovie1(w http.ResponseWriter, r *http.Request) {
 	movieinfo := &model.Movie{}
 	movieinfo.MovieName = r.FormValue("moviename")
 	movieinfo.ActorName = r.FormValue("actorname")
-	movieinfo.Time = r.FormValue("time")
+	movieinfo.Showtime = r.FormValue("Showtime")
 	corestr := r.FormValue("score")
 	movieinfo.Score, _ = strconv.ParseFloat(corestr, 64)
 	BoxOfficeStr := r.FormValue("boxoffice")
 	movieinfo.BoxOffice, _ = strconv.ParseInt(BoxOfficeStr, 10, 64)
 	movieinfo.Genre = r.FormValue("genre")
 	movieinfo.Area = r.FormValue("area")
-	movieinfo.Age = r.FormValue("age")
 	movieinfo.ImgPath = r.FormValue("img_path")
 	movieinfo.Duration = r.FormValue("duration")
 	movieinfo.Showtime = r.FormValue("showtime")
 	fmt.Println(movieinfo)
-	dao.UpdateMovieByMovieName(movieinfo, movieinfo.MovieName)
+	//dao.UpdateMovieByMovieName(movieinfo, movieinfo.MovieName)
 	GetPageMovie(w, r)
 }

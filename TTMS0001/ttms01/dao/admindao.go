@@ -14,14 +14,16 @@ func CheckAdmin(username string, password string) (*model.User, error) {
 }
 
 func IsAdmin(username string) bool {
-	sql := "select * from admin where username=?"
+	sql := "select * from admin where adminname=?"
+	//fmt.Println("cinemasearch3.54")
 	row := utils.Db.QueryRow(sql, username)
 	user := &model.User{}
-	fakestate := ""
-	row.Scan(&user.ID, &user.Username, &user.Password, &user.Email, &fakestate)
+	//fakestate := ""
+	row.Scan(&user.ID, &user.Username, &user.Password, &user.Email)
 	if user.ID > 0 {
 		return true
 	} else {
 		return false
 	}
+
 }
