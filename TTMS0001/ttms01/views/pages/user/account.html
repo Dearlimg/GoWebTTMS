@@ -44,7 +44,7 @@
                 <p>座位号：{{.Seat}}</p>
                 <p>观影人：{{.Owner}}</p>
                 <p>单张票价：￥{{.Price}}</p>
-                <a href="/returnticket?Owner={{.Owner}}&Movie={{.Movie}}&Cinema={{.Cinema}}&Screen={{.Screen}}&Seat={{.Seat}}&Time={{.Time}}&Price={{.Price}}">
+                <a href="/returnticket?TicketId={{.TicketId}}&Owner={{.Owner}}&Movie={{.Movie}}&Cinema={{.Cinema}}&Screen={{.Screen}}&Seat={{.Seat}}&Time={{.Time}}&Price={{.Price}}">
                     <button class="refund-button">退票</button>
                 </a>
                 {{if $.IsAdmin}}

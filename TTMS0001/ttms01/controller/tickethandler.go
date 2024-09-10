@@ -198,17 +198,26 @@ func ShowTickets(w http.ResponseWriter, r *http.Request) {
 
 func ReturnTicket(w http.ResponseWriter, r *http.Request) {
 	ticket := &model.Ticket{
-		Owner:  r.FormValue("Owner"),
-		Movie:  r.FormValue("Movie"),
-		Cinema: r.FormValue("Cinema"),
-		Screen: r.FormValue("Screen"),
-		Seat:   r.FormValue("Seat"),
-		Time:   r.FormValue("Time"),
+		TicketId: r.FormValue("ticket_id"),
+		Owner:    r.FormValue("Owner"),
+		Movie:    r.FormValue("Movie"),
+		Cinema:   r.FormValue("Cinema"),
+		Screen:   r.FormValue("Screen"),
+		Seat:     r.FormValue("Seat"),
+		Time:     r.FormValue("Time"),
 	}
 	price, _ := strconv.ParseFloat(r.FormValue("Price"), 64)
 	ticket.Price = price
 
 	dao.DeleteTicketByAllInfo(ticket)
+
+	fmt.Println("ReturnTicket finished 1")
+
+	moviesession, _ := dao.GetMovieSessionByTicket(ticket)
+	fmt.Println("test2")
+	fmt.Println(moviesession)
+	modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, ticket.Seat, "sell")
+	dao.ModifyShowSessionSeat(moviesession, modifedinfo)
 
 	ShowTickets(w, r)
 }

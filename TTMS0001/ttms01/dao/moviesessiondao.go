@@ -82,6 +82,15 @@ import (
 //	return page, nil
 //}
 
+func ModifyShowSessionSeat(moviesession *model.MovieSession, newinfo string) error {
+	sql := "update movie_session set info=? where cinema=? and screenroom=? and movietime=? and movie=? and price=?"
+	_, err := utils.Db.Exec(sql, newinfo, moviesession.ShowCinema, moviesession.ShowScreen, moviesession.ShowTime, moviesession.ShowMovie, moviesession.Price)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetMovieSessionByMovieId(movieId string) (*model.Page, error) {
 	fmt.Println("GetMovieSessionByMovieId", movieId)
 	sql := "SELECT movie.moviename, cinema.cinemaname, moviesession.showtime, moviesession.showinfo, moviesession.state, moviesession.screenroom, moviesession.price FROM moviesession JOIN movie ON movie.movieid = moviesession.movieid JOIN cinema ON cinema.cinemaid = moviesession.cinemaid WHERE movie.movieid = ?"

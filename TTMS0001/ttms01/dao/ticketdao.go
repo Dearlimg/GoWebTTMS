@@ -228,18 +228,67 @@ func DeleteTicketWithoutSeat(ticket *model.Ticket) {
 	_, _ = utils.Db.Exec(sql, ticket.UserId, ticket.MovieSessionId, ticket.Seat)
 }
 
+//func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) {
+//	//sql := "select * from moviesession where cinema=? and screenroom=? and movietime=? and movie=? and price=?"
+//	//fmt.Println("GetMovieSessionByTicket", ticket.UserId)
+//	sql01 := "select userid from user where username=?"
+//	var userid string
+//	err0 := utils.Db.QueryRow(sql01, ticket.Owner).Scan(&userid)
+//	if err0 != nil {
+//		panic(err0)
+//	}
+//	fmt.Println("GetMovieSessionByTicket", userid, "wad", ticket)
+//
+//	sql0 := "select cinema.cinemaname,moviesession.screenroom,moviesession.showtime,movie.moviename,moviesession.showinfo,moviesession.price from moviesession join ticket on moviesession.moviesessionid=ticket.moviesessionid join movie on movie.movieid=moviesession.movieid join cinema on cinema.cinemaid=moviesession.moviesessionid where moviesession.showtime=? and moviesession.price=? and moviesession.screenroom=?"
+//
+//	//fmt.Println("GetMovieSessionByTicket", ticket)
+//	row := utils.Db.QueryRow(sql0, ticket.Time, ticket.Price, ticket.Screen)
+//	res := &model.MovieSession{}
+//	err := row.Scan(&res.ShowCinema, &res.ShowScreen, &res.ShowTime, &res.ShowMovie, &res.ShowInfo, &res.Price)
+//	fmt.Println("GetMovieS ess ionB yTicket", res)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return res, nil
+//}
+
+//func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) {
+//	sql := "select moviesessionid from ticket where ticketid=?"
+//	var movieSessionID int
+//	err := utils.Db.QueryRow(sql, ticket.TicketId).Scan(&movieSessionID)
+//	if err != nil {
+//		panic(err)
+//	}
+//	var res *model.MovieSession
+//	sql1 := "select cinema.cinemaname,moviesession.screenroom,moviesession.showtime,movie.moviename,moviesession.showinfo,moviesession.price from moviesession join cinema on moviesession.cinemaid=cinema.cinemaid join cinema on cinema.cinemaid=moviesession.cinemaid where moviesession.moviesessionid=?"
+//	utils.Db.QueryRow(sql1, movieSessionID).Scan(&res.ShowCinema, &res.ShowScreen, &res.ShowTime, &res.ShowMovie, &res.ShowInfo, &res.Price)
+//	fmt.Println("res", res)
+//	return res, nil
+//}
+
 func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) {
-	//sql := "select * from moviesession where cinema=? and screenroom=? and movietime=? and movie=? and price=?"
-	sql0 := "select cinema.cinemaname,moviesession.screenroom,moviesession.showtime,movie.moviename,moviesession.showinfo,moviesession.price from moviesession join ticket on moviesession.moviesessionid=ticket.moviesessionid join movie on movie.movieid=moviesession.movieid where ticket.userid=?"
-	//fmt.Println("GetMovieSessionByTicket", ticket)
-	row := utils.Db.QueryRow(sql0, ticket.UserId)
-	res := &model.MovieSession{}
-	err := row.Scan(&res.ShowCinema, &res.ShowScreen, &res.ShowTime, &res.ShowMovie, &res.ShowInfo, &res.Price)
-	//fmt.Println(res)
+	sql := "SELECT moviesessionid FROM ticket WHERE ticketid=?"
+	var movieSessionID int
+	err := utils.Db.QueryRow(sql, ticket.TicketId).Scan(&movieSessionID)
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+
+	fmt.Println(movieSessionID)
+	var res model.MovieSession
+	sql1 := `
+		SELECT cinema.cinemaname, moviesession.screenroom, moviesession.showtime, movie.moviename, moviesession.showinfo, moviesession.price
+		FROM moviesession
+		JOIN cinema ON moviesession.cinemaid = cinema.cinemaid
+		JOIN movie ON movie.movieid = moviesession.movieid
+		WHERE moviesession.moviesessionid = ?`
+	err = utils.Db.QueryRow(sql1, movieSessionID).Scan(&res.ShowCinema, &res.ShowScreen, &res.ShowTime, &res.ShowMovie, &res.ShowInfo, &res.Price)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("rdwawadwadawdawes", res)
+	return &res, nil
 }
 
 func ModifySessionInfo(sessioninfo string, seat string, way string) string {
@@ -267,14 +316,14 @@ func ModifySessionInfo(sessioninfo string, seat string, way string) string {
 func GetAllTickets() []model.Ticket {
 	//sql := "select * from tickets"
 	fmt.Println("GetAllTickets1				")
-	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid where ticket.state>0"
+	sql0 := "select ticket.ticketid,user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid where ticket.state>0"
 	rows, _ := utils.Db.Query(sql0)
 	fmt.Println("GetAllTickets1		2		")
 	defer rows.Close()
 	tickets := []model.Ticket{}
 	for rows.Next() {
 		ticket := model.Ticket{}
-		rows.Scan(&ticket.Owner, &ticket.Cinema, &ticket.Screen, &ticket.Seat, &ticket.Time, &ticket.Movie, &ticket.Price)
+		rows.Scan(&ticket.TicketId, &ticket.Owner, &ticket.Cinema, &ticket.Screen, &ticket.Seat, &ticket.Time, &ticket.Movie, &ticket.Price)
 		//fmt.Println("GetAllTickets				", ticket)
 		tickets = append(tickets, ticket)
 	}
