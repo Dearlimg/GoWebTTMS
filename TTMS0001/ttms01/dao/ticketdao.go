@@ -92,13 +92,14 @@ func Compare(new string, old string) []int {
 //}
 
 func AddTicket(ticket *model.Ticket) {
-	fmt.Println("AddTicket", ticket)
+	fmt.Println("			AddTicket1", ticket)
 	var id int
 	var movieSessionID int
 
 	if ticket.Owner == "admin" {
 		sql0 := "SELECT adminid FROM admin WHERE adminname=?"
-		err := utils.Db.QueryRow(sql0, ticket.Movie).Scan(&id)
+		err := utils.Db.QueryRow(sql0, ticket.Owner).Scan(&id)
+		fmt.Println("wad 	d	dwa		dwa", id)
 		if err != nil {
 			fmt.Println("Error fetching admin ID:", err)
 			return
@@ -114,6 +115,7 @@ func AddTicket(ticket *model.Ticket) {
 		sql2 := "INSERT INTO ticket(userid, moviesessionid, state, seat, owner) VALUES(?,?,?,?,?)"
 		fmt.Println("AddTicket", id, movieSessionID, 1, ticket.Seat, ticket.Owner)
 		_, err = utils.Db.Exec(sql2, id, movieSessionID, 1, ticket.Seat, ticket.Owner)
+		fmt.Println(" 			AddTicket2", id, movieSessionID, 1, ticket.Seat, ticket.Owner)
 		if err != nil {
 			fmt.Println("Error inserting ticket:", err)
 			return
@@ -163,7 +165,7 @@ func AddTicket(ticket *model.Ticket) {
 
 func GetTicketsByName(username string) ([]model.Ticket, error) {
 	//sql := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on moviesession.moviesessionid=ticket.moviesessionid join user on user.userid=ticket.userid where user.username=?"
-	sql := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid where user.username=?"
+	sql := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid where user.username=? and ticket.state>0"
 	rows, err := utils.Db.Query(sql, username)
 	if err != nil {
 		return nil, err
@@ -179,9 +181,46 @@ func GetTicketsByName(username string) ([]model.Ticket, error) {
 	return tickets, nil
 }
 
+//func DeleteTicketByAllInfo(ticket *model.Ticket) {
+//	sql0 := "select moviesessionid from moviesession where showtime=? and screenroom=? and price=?"
+//	utils.Db.Exec(sql0, ticket.Time, ticket.Screen, ticket.Price)
+//
+//	fmt.Println("Delet eTicke  tByAllInfo", ticket.UserId, ticket.MovieSessionId, ticket.Seat)
+//	sql := "update ticket set state=0 where moviesessionid=? and seat=?"
+//	_, _ = utils.Db.Exec(sql, ticket.MovieSessionId, ticket.Seat)
+//}
+
 func DeleteTicketByAllInfo(ticket *model.Ticket) {
-	sql := "update ticket set state=0 where userid = ? and moviesessionid=? and seat=?"
-	_, _ = utils.Db.Exec(sql, ticket.UserId, ticket.MovieSessionId, ticket.Seat)
+	// 定义 SQL 查询语句，获取 moviesessionid
+	sql0 := "SELECT moviesessionid FROM moviesession WHERE showtime=? AND screenroom=? AND price=?"
+
+	// 定义一个变量用来保存查询结果
+	var movieSessionID int
+
+	// 执行查询并将结果赋值给 movieSessionID
+	err := utils.Db.QueryRow(sql0, ticket.Time, ticket.Screen, ticket.Price).Scan(&movieSessionID)
+	if err != nil {
+		// 处理查询错误，例如记录日志或返回错误
+		fmt.Println("Error querying moviesession:", err)
+		return
+	}
+
+	// 打印日志信息，帮助调试
+	fmt.Println("DeleteTicketByAllInfo", movieSessionID, ticket.Seat)
+
+	// 定义 SQL 更新语句，将票务状态更新为 0
+	sql := "UPDATE ticket SET state=0 WHERE moviesessionid=? AND seat=?"
+
+	// 执行更新操作
+	_, err = utils.Db.Exec(sql, movieSessionID, ticket.Seat)
+	if err != nil {
+		// 处理更新错误，例如记录日志或返回错误
+		fmt.Println("Error updating ticket:", err)
+		return
+	}
+
+	//
+
 }
 
 func DeleteTicketWithoutSeat(ticket *model.Ticket) {
@@ -228,7 +267,7 @@ func ModifySessionInfo(sessioninfo string, seat string, way string) string {
 func GetAllTickets() []model.Ticket {
 	//sql := "select * from tickets"
 	fmt.Println("GetAllTickets1				")
-	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid "
+	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid where ticket.state>0"
 	rows, _ := utils.Db.Query(sql0)
 	fmt.Println("GetAllTickets1		2		")
 	defer rows.Close()

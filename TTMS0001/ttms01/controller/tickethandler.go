@@ -210,10 +210,6 @@ func ReturnTicket(w http.ResponseWriter, r *http.Request) {
 
 	dao.DeleteTicketByAllInfo(ticket)
 
-	//moviesession, _ := dao.GetMovieSessionByTicket(ticket)
-	//modifedinfo := dao.ModifySessionInfo(moviesession.ShowInfo, ticket.Seat, "sell")
-	//dao.ModifyShowSessionSeat(moviesession, modifedinfo)
-
 	ShowTickets(w, r)
 }
 
