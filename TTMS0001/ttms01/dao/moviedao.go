@@ -264,3 +264,8 @@ func GetIntroductionByMovieName(moviename string) *model.Introduction {
 	row.Scan(&res.Intro)
 	return res
 }
+
+func AddMovieState(movieid string) {
+	sql := "update movie set state=state+1 where movieid=?"
+	utils.Db.Exec(sql, movieid)
+}

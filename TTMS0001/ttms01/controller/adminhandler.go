@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -27,6 +28,7 @@ func DeleteMovieSession(w http.ResponseWriter, r *http.Request) {
 	movie_session.ShowInfo = r.FormValue("ShowInfo")
 	movie_session.Price, _ = strconv.ParseFloat(r.FormValue("Price"), 64)
 
+	fmt.Println("Del   eteMov  ie   Session", movie_session)
 	dao.DeleteMovieSession(movie_session)
 
 	//测试一下

@@ -155,6 +155,7 @@ func AddMovieSession1(w http.ResponseWriter, r *http.Request) {
 	// Save movie session or return conflict message
 	if flag == -1 {
 		moviesession.Remaining = moviesession.Count()
+		dao.AddMovieState(moviesession.MovieId)
 		if err := dao.SaveMovieSession(moviesession); err != nil {
 			http.Error(w, "Failed to save session", http.StatusInternalServerError)
 			return

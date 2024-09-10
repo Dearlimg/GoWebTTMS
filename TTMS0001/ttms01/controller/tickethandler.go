@@ -181,6 +181,7 @@ func ShowTickets(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("showtickets2")
 		page.IsAdmin = true
 		tickets := dao.GetAllTickets()
+
 		page.Tickets = tickets
 		t := template.Must(template.ParseFiles("views/pages/user/account.html"))
 		t.Execute(w, page)

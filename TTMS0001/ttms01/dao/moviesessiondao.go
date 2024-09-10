@@ -153,21 +153,14 @@ func ParseInfo(date string) ([]int, error) {
 //	return nil
 //}
 
-func DeleteMovieSession(moviesession *model.MovieSession) error {
-	sql := "update moviesession set state=0 where sessionid = ?"
-	utils.Db.Exec(sql, moviesession.MovieSessionId)
-	return nil
-}
+//func DecreaseMovieState()
 
-//func SaveMovieSession(moviesession *model.MovieSession) error {
-//	sql0 := "select movieid from movie where moviename=?"
-//	sql1 := "select cinemaid from cinema where cinemaid=?"
-//
-//	sql := "insert into moviesession(movieid,cinemaid,showtime,showinfo,state,screenroom,price) values (?,?,?,?,?,?,?)"
-//	fmt.Println(moviesession.MovieId, moviesession.CinemaId, moviesession.ShowTime, moviesession.ShowInfo, moviesession.State, moviesession.ShowScreen, moviesession.Price)
-//	utils.Db.Exec(sql, moviesession.MovieId, moviesession.CinemaId, moviesession.ShowTime, moviesession.ShowInfo, moviesession.State, moviesession.ShowScreen, moviesession.Price)
-//	return nil
-//}
+func DeleteMovieSession(moviesession *model.MovieSession) {
+	fmt.Println("Dele teM ovie Ses sion", moviesession)
+	sql := "update moviesession set state=0 where showtime=? and screenroom=? and price=?"
+	utils.Db.Exec(sql, moviesession.ShowTime, moviesession.ShowScreen, moviesession.Price)
+
+}
 
 func SaveMovieSession(moviesession *model.MovieSession) error {
 	// 检查电影是否存在
@@ -196,21 +189,6 @@ func SaveMovieSession(moviesession *model.MovieSession) error {
 
 	return nil
 }
-
-//func GetMoviesessionByCinemaAndScreen(cinema string, screenroom string) ([]*model.MovieSession, error) {
-//	sql0 := "select cinemaid from cinema where cinemaname = ?"
-//	row0 := utils.Db.QueryRow(sql0, cinema)
-//
-//	sql := "select * from moviesession where cinemaid=? and screenroom=? "
-//	rows, _ := utils.Db.Query(sql, row0, screenroom)
-//	var moviesessions []*model.MovieSession
-//	for rows.Next() {
-//		moviesession := &model.MovieSession{}
-//		rows.Scan(&moviesession.MovieSessionId, &moviesession.MovieId, &moviesession.CinemaId, &moviesession.ShowTime, &moviesession.ShowInfo, &moviesession.State, &moviesession.ShowScreen, &moviesession.Price)
-//		moviesessions = append(moviesessions, moviesession)
-//	}
-//	return moviesessions, nil
-//}
 
 func GetMoviesessionByCinemaAndScreen(cinema string, screenroom string) ([]*model.MovieSession, error) {
 	// 查询 cinemaid

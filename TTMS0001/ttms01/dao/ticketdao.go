@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -50,51 +49,121 @@ func Compare(new string, old string) []int {
 //	return nil
 //}
 
-func AddTicket(ticket *model.Ticket) error {
-	// 定义用于查询的 SQL 语句
-	sql0 := `
-		SELECT user.userid, moviesession.moviesessionid 
-		FROM ticket 
-		JOIN user ON user.userid = ticket.userid 
-		JOIN moviesession ON moviesession.moviesessionid = ticket.moviesessionid 
-		WHERE user.username = ?`
+//func AddTicket(ticket *model.Ticket) error {
+//	// 定义用于查询的 SQL 语句
+//	//sql0 := `
+//	//	SELECT user.userid, moviesession.moviesessionid
+//	//	FROM ticket
+//	//	JOIN user ON user.userid = ticket.userid
+//	//	JOIN moviesession ON moviesession.moviesessionid = ticket.moviesessionid
+//	//	WHERE user.username = ?`
+//
+//	//// 执行查询，并将结果存储在变量中
+//	//row := utils.Db.QueryRow(sql0, ticket.Owner)
+//
+//	// 定义用于接收查询结果的变量
+//	//var userId int
+//	//var movieSessionId int
+//	//
+//	//// 执行扫描，将结果赋值给变量
+//	//err := row.Scan(&userId, &movieSessionId)
+//	//fmt.Println("AddTicket", userId, movieSessionId)
+//	//if err != nil {
+//	//	// 检查错误是否是因为未找到结果
+//	//	if err == sql.ErrNoRows {
+//	//		return fmt.Errorf("no such user or movie session found for username: %s", ticket.Owner)
+//	//	}
+//	//	return err
+//	//}
+//
+//	// 打印调试信息
+//	//fmt.Println(userId, movieSessionId, ticket.Seat)
+//	//
+//	//// 定义插入的 SQL 语句
+//	//sql := "INSERT INTO ticket(userid, moviesessionid, state, seat) VALUES (?, ?, 1, ?)"
+//	//
+//	//// 执行插入操作
+//	//_, err = utils.Db.Exec(sql, userId, movieSessionId, ticket.Seat)
+//	//if err != nil {
+//	//	return err
+//	//}
+//	//
+//	//return nil
+//}
 
-	// 执行查询，并将结果存储在变量中
-	row := utils.Db.QueryRow(sql0, ticket.Owner)
+func AddTicket(ticket *model.Ticket) {
+	fmt.Println("AddTicket", ticket)
+	var id int
+	var movieSessionID int
 
-	// 定义用于接收查询结果的变量
-	var userId int
-	var movieSessionId int
-
-	// 执行扫描，将结果赋值给变量
-	err := row.Scan(&userId, &movieSessionId)
-	fmt.Println("AddTicket", userId, movieSessionId)
-	if err != nil {
-		// 检查错误是否是因为未找到结果
-		if err == sql.ErrNoRows {
-			return fmt.Errorf("no such user or movie session found for username: %s", ticket.Owner)
+	if ticket.Owner == "admin" {
+		sql0 := "SELECT adminid FROM admin WHERE adminname=?"
+		err := utils.Db.QueryRow(sql0, ticket.Movie).Scan(&id)
+		if err != nil {
+			fmt.Println("Error fetching admin ID:", err)
+			return
 		}
-		return err
+
+		sql3 := "SELECT moviesessionid FROM moviesession WHERE showtime=? AND price=?"
+		err = utils.Db.QueryRow(sql3, ticket.Time, ticket.Price).Scan(&movieSessionID)
+		if err != nil {
+			fmt.Println("Error fetching movie session ID:", err)
+			return
+		}
+
+		sql2 := "INSERT INTO ticket(userid, moviesessionid, state, seat, owner) VALUES(?,?,?,?,?)"
+		fmt.Println("AddTicket", id, movieSessionID, 1, ticket.Seat, ticket.Owner)
+		_, err = utils.Db.Exec(sql2, id, movieSessionID, 1, ticket.Seat, ticket.Owner)
+		if err != nil {
+			fmt.Println("Error inserting ticket:", err)
+			return
+		}
+
+	} else {
+		sql1 := "SELECT userid FROM user WHERE username=?"
+		err := utils.Db.QueryRow(sql1, ticket.Owner).Scan(&id)
+		if err != nil {
+			fmt.Println("Error fetching user ID:", err)
+			return
+		}
+
+		sql3 := "SELECT moviesessionid FROM moviesession WHERE showtime=? AND price=?"
+		err = utils.Db.QueryRow(sql3, ticket.Time, ticket.Price).Scan(&movieSessionID)
+		if err != nil {
+			fmt.Println("Error fetching movie session ID:", err)
+			return
+		}
+
+		sql2 := "INSERT INTO ticket(userid, moviesessionid, state, seat, owner) VALUES(?,?,?,?,?)"
+		_, err = utils.Db.Exec(sql2, id, movieSessionID, 1, ticket.Seat, ticket.Owner)
+		if err != nil {
+			fmt.Println("Error inserting ticket:", err)
+			return
+		}
 	}
-
-	// 打印调试信息
-	fmt.Println(userId, movieSessionId, ticket.Seat)
-
-	// 定义插入的 SQL 语句
-	sql := "INSERT INTO ticket(userid, moviesessionid, state, seat) VALUES (?, ?, 1, ?)"
-
-	// 执行插入操作
-	_, err = utils.Db.Exec(sql, userId, movieSessionId, ticket.Seat)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
+
+//func AddTicket(ticket *model.Ticket) {
+//	fmt.Println("AddTicket", ticket)
+//	if ticket.Owner == "admin" {
+//		sql0 := "select adminid from admin where adminname=?"
+//		utils.Db.QueryRow(sql0, ticket.Movie)
+//	} else {
+//		sql1 := "select userid from user where username=?"
+//		utils.Db.QueryRow(sql1)
+//
+//		sql3 := "select moviesessionid from moviesession where showtime=? price=?"
+//		utils.Db.QueryRow(sql3, ticket.Time, ticket.Price)
+//
+//		sql2 := "insert into ticket(userid,moviesessionid,state,seat,owner) values(?,?,1,?,?)"
+//		utils.Db.Exec(sql2)
+//
+//	}
+//}
 
 func GetTicketsByName(username string) ([]model.Ticket, error) {
 	//sql := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on moviesession.moviesessionid=ticket.moviesessionid join user on user.userid=ticket.userid where user.username=?"
-	sql := "select ticket.owner,moviesession.cinemaid,moviesession.screenroom,ticket.seat,moviesession.showtime,moviesession.movieid,moviesession.price from ticket join newttms.moviesession on moviesession.moviesessionid=ticket.moviesessionid where ticket.owner=?"
+	sql := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid where user.username=?"
 	rows, err := utils.Db.Query(sql, username)
 	if err != nil {
 		return nil, err
@@ -158,28 +227,17 @@ func ModifySessionInfo(sessioninfo string, seat string, way string) string {
 
 func GetAllTickets() []model.Ticket {
 	//sql := "select * from tickets"
-	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid "
+	fmt.Println("GetAllTickets1				")
+	sql0 := "select user.username,cinema.cinemaname,moviesession.screenroom,ticket.seat,moviesession.showtime,movie.moviename,moviesession.price from ticket join moviesession on ticket.moviesessionid=moviesession.moviesessionid join user on ticket.userid=user.userid join cinema on cinema.cinemaid=moviesession.cinemaid join movie on moviesession.movieid = movie.movieid "
 	rows, _ := utils.Db.Query(sql0)
+	fmt.Println("GetAllTickets1		2		")
 	defer rows.Close()
 	tickets := []model.Ticket{}
 	for rows.Next() {
 		ticket := model.Ticket{}
 		rows.Scan(&ticket.Owner, &ticket.Cinema, &ticket.Screen, &ticket.Seat, &ticket.Time, &ticket.Movie, &ticket.Price)
+		//fmt.Println("GetAllTickets				", ticket)
 		tickets = append(tickets, ticket)
 	}
 	return tickets
-	//sql := "select ticket.owner,moviesession.cinemaid,moviesession.screenroom,ticket.seat,moviesession.showtime,moviesession.movieid,moviesession.price from ticket join newttms.moviesession on moviesession.moviesessionid=ticket.moviesessionid where ticket.owner=?"
-	//rows, err := utils.Db.Query(sql, username)
-	//if err != nil {
-	//	return nil
-	//}
-	//defer rows.Close()
-	//tickets := []model.Ticket{}
-	//for rows.Next() {
-	//	ticket := model.Ticket{}
-	//	rows.Scan(&ticket.Owner, &ticket.Cinema, &ticket.Screen, &ticket.Seat, &ticket.Time, &ticket.Movie, &ticket.Price)
-	//	tickets = append(tickets, ticket)
-	//}
-	////fmt.Println("GetTicketsByName", tickets)
-	//return tickets
 }
