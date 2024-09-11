@@ -57,12 +57,13 @@ func BuyTicket(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(introduction, movieinfo.MovieName)
 	//fmt.Println(introduction)
 	page.Introductions = introduction
-	fmt.Println("BuyTicket3")
+	fmt.Println("BuyTicket3", movieinfo.MovieId)
 	comments := dao.GetCommentsByMovieName(movieinfo.MovieId)
 	//fmt.Println(comments)
 	page.Comments = comments
 	//fmt.Println(page.ShowSession)
 	fmt.Println("BuyTicket4")
+	fmt.Println(page.Comments)
 	t := template.Must(template.ParseFiles("views/pages/trade/showinfo.html"))
 	t.Execute(w, page)
 }

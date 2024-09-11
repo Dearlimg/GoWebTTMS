@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>电影购票页面</title>
+  <link type="text/css" rel="stylesheet" href="/static/css/style_buy_new.css"> <!-- 样式表链接，你可以根据需要自定义样式 -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+    }
+    nav div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 16px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .movie-info {
+      background: #fff;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .movie-info img {
+      border-radius: 8px;
+    }
+    .comment-list {
+      margin-top: 20px;
+    }
+    .comment-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    .comment-content {
+      margin-bottom: 10px;
+    }
+    .comment-speaker {
+      font-weight: bold;
+    }
+    .reply {
+      margin-left: 20px;
+      padding: 5px 0;
+      border-left: 2px solid #ddd;
+    }
+    .reply-time {
+      font-size: 0.9em;
+      color: #666;
+    }
+    .comment-form {
+      margin-top: 20px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .comment-form label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .comment-form input, .comment-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .comment-form button, .button-link {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+    .button-link:hover, .comment-form button:hover {
+      background-color: #0056b3;
+    }
+    .movie-info h2, .movie-info h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <div>
+    <a href="/main">首页</a>
+    <a href="/movieSearch">电影</a>
+    <a href="/cinemaSearch">影院</a>
+    {{if .IsAdmin}}
+      <a href="#">后台管理</a>
+    {{else}}
+    {{end}}
+  </div>
+  <div class="right-nav">
+    {{if .IsLogin}}
+      <a href="/showtickets">{{.Username}}</a>
+      <a href="/exit">注销</a>
+    {{else}}
+      <a href="pages/user/login.html">Login</a>
+      <a href="pages/user/register.html">Register</a>
+    {{end}}
+  </div>
+</nav>
+
+<div class="movie-info">
+  <h2>电影信息</h2>
+  <img src="{{.Movie.ImgPath}}" alt="电影海报">
+  <p><strong>电影名称:</strong> {{.Movie.MovieName}}</p>
+  <p><strong>主演:</strong> {{.Movie.ActorName}}</p>
+  <p><strong>评分:</strong> {{.Movie.Score}}</p>
+  <p><strong>票房:</strong> {{.Movie.BoxOffice}}</p>
+  <p><strong>地区:</strong> {{.Movie.Area}}</p>
+  <p><strong>类型:</strong> {{.Movie.Genre}}</p>
+  <p><strong>上映时间:</strong> {{.Movie.Showtime}}</p>
+  <p><strong>时长:</strong> {{.Movie.Duration}}min</p>
+  <p><strong>简介:</strong> {{.Movie.Introduction}}</p>
+  <h3>评论区</h3>
+
+  <div class="comment-list">
+    <h4>已有评论:</h4>
+    <ul>
+      {{range .Comments}}
+        <li class="comment-item">
+          {{if .At}}
+            <div class="comment-content">
+              <strong class="comment-speaker">{{.Speaker}}&nbsp;&nbsp;</strong>
+              <span class="comment-time">{{.Time}}</span>
+              <p class="comment-text">{{.Word}}</p>
+            </div>
+            <div class="reply-section">
+              {{range .SonComment}}
+                <div class="reply">
+                  <strong>{{.Replier}}:</strong> {{.Replies}}
+                  <span class="reply-time">{{.Time}}</span>
+                </div>
+              {{else}}
+                <p class="no-replies">暂无回复</p>
+              {{end}}
+            </div>
+          {{else}}
+            <div class="comment-content">
+              <strong class="comment-speaker">{{.Speaker}}&nbsp;&nbsp;</strong>
+              <span class="comment-time">{{.Time}}</span>
+              <p class="comment-text">{{.Word}}</p>
+            </div>
+          {{end}}
+
+          {{if $.IsAdmin}}
+            <a href="/deletecomment?comment={{.Word}}&speaker={{.Speaker}}&time={{.Time}}&movie={{.Movie}}" class="button-link">
+              删除评论
+            </a>
+          {{else}}
+          {{end}}
+        </li>
+      {{end}}
+    </ul>
+  </div>
+
+  <div class="comment-form">
+    <h4>我来评论:</h4>
+    <form action="/submitcomment?moviename={{.Movie.MovieName}}" method="post">
+      {{if $.IsAdmin}}
+        <label for="username">用户名:</label>
+        <input type="text" id="username" name="username" value="{{.Username}}" required>
+      {{else}}
+        <label for="username">用户名:</label>
+        <input type="text" id="username" name="username" value="{{.Username}}" readonly>
+      {{end}}
+
+      <label for="comment">评论(500字以内):</label>
+      <label for="At">@:</label>
+      <input type="text" id="At" name="At">
+      <textarea id="comment" name="comment" rows="4" required></textarea>
+      {{if $.IsLogin}}
+        <button type="submit">提交评论</button>
+      {{else}}
+        <a href="/jumptologin" class="button-link">快去登录吧</a>
+      {{end}}
+    </form>
+  </div>
+</div>
+
+{{range .ShowSession}}
+<div class="movie-info">
+  <h3>场次信息</h3>
+  <p>放映电影: {{.ShowMovie}}</p>
+  <p>电影院: {{.ShowCinema}}</p>
+  <p>放映厅: {{.ShowScreen}}</p>
+  <p>放映时间: {{.ShowTime}}</p>
+  <p>价格: {{.Price}}</p>
+  <p>剩余: {{.Remaining}}</p>
+  {{if .State}}
+  <a class="button-link">已经卖完了</a>
+  {{else}}
+  {{if $.IsLogin}}
+    <a href="/buy?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link">看这场</a>
+  {{else}}
+    <a href="/jumptologin" class="button-link">快去登录吧</a>
+  {{end}}
+
+  {{if $.IsAdmin}}
+  {{if eq .Remaining 20}}
+  <a href="/deletemoviesession?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link">删除这个场次</a>
+{{else}}
+  {{end}}
+  {{else}}
+    <!-- 在这里可以添加针对游客的操作，比如提示用户登录 -->
+  {{end}}
+  {{end}}
+</div>
+{{end}}
+
+</body>
+</html>

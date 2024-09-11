@@ -43,6 +43,33 @@
     <h3>评论区</h3>
 
     <!-- 评论列表 -->
+{{/*    <div class="comment-list">*/}}
+{{/*        <h4>已有评论:</h4>*/}}
+{{/*        <ul>*/}}
+{{/*            {{range .Comments}}*/}}
+{{/*                <li>*/}}
+
+{{/*                    {{if .At}}*/}}
+{{/*                        <strong>{{.Speaker}}&nbsp@&nbsp<strong>{{.At}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong></strong>*/}}
+{{/*                    {{else}}*/}}
+{{/*                        <strong>{{.Speaker}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong>*/}}
+{{/*                    {{end}}*/}}
+
+
+{{/*                    {{if $.IsAdmin}}*/}}
+{{/*                        <a href="/deletecomment?comment={{.Word}}&speaker={{.Speaker}}&time={{.Time}}&movie={{.Movie}}" style="width: 140px;height: 40px;">*/}}
+{{/*                            <button type="submit">删除评论</button>*/}}
+{{/*                        </a>*/}}
+{{/*                    {{else}}*/}}
+
+{{/*                    {{end}}*/}}
+{{/*                </li>*/}}
+{{/*            {{end}}*/}}
+{{/*        </ul>*/}}
+{{/*    </div>*/}}
+
+
+
     <div class="comment-list">
         <h4>已有评论:</h4>
         <ul>
@@ -50,12 +77,19 @@
                 <li>
 
                     {{if .At}}
-                        <strong>{{.Speaker}}&nbsp@&nbsp<strong>{{.At}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong></strong>
+                        <strong>{{.CommentId}}&nbsp {{.Speaker}}&nbsp&nbsp<strong>&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong></strong><hr>
+                            <div>
+                                {{range .SonComment}}
+                                    <a>{{.SonCommentId}}&nbsp{{.Replier}}于{{.Time}}回复:{{.Replies}}</a>
+                                        <hr>
+                                {{else}}
+                                {{end}}
+                            </div>
                     {{else}}
                         <strong>{{.Speaker}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong>
                     {{end}}
 
-                    {{/*                    <strong>{{.Speaker}}:<strong>{{.Time}}:</strong> {{.Comment}}</strong>*/}}
+
                     {{if $.IsAdmin}}
                         <a href="/deletecomment?comment={{.Word}}&speaker={{.Speaker}}&time={{.Time}}&movie={{.Movie}}" style="width: 140px;height: 40px;">
                             <button type="submit">删除评论</button>
@@ -70,7 +104,7 @@
 
     <div class="comment-form">
         <h4>我来评论:</h4>
-        <form action="/submitcomment?moviename={{.Movie.MovieName}}" method="post">
+        <form action="/submitcomment?MovieId={{.Movie.MovieId}}" method="post">
             {{if $.IsAdmin}}
                 <label for="username">用户名:</label>
                 <input type="text" id="username" name="username" value="{{.Username}}" required>

@@ -266,8 +266,14 @@ func SubmitComment(w http.ResponseWriter, r *http.Request) {
 		Time:    string(time.Format("2006-01-02-15:04:05")),
 		Movie:   moviename,
 		At:      At,
+		MovieId: r.FormValue("MovieId"),
 	}
-	dao.AddComment(Comment)
+	fmt.Println(Comment)
+	if At == "" {
+		dao.AddComment(Comment)
+	} else {
+		//dao.AddSonComment(At, Comment)
+	}
 	GetPageMovie(w, r)
 }
 
