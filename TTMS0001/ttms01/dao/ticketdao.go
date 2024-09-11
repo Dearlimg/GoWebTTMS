@@ -252,20 +252,6 @@ func DeleteTicketWithoutSeat(ticket *model.Ticket) {
 //	return res, nil
 //}
 
-//func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) {
-//	sql := "select moviesessionid from ticket where ticketid=?"
-//	var movieSessionID int
-//	err := utils.Db.QueryRow(sql, ticket.TicketId).Scan(&movieSessionID)
-//	if err != nil {
-//		panic(err)
-//	}
-//	var res *model.MovieSession
-//	sql1 := "select cinema.cinemaname,moviesession.screenroom,moviesession.showtime,movie.moviename,moviesession.showinfo,moviesession.price from moviesession join cinema on moviesession.cinemaid=cinema.cinemaid join cinema on cinema.cinemaid=moviesession.cinemaid where moviesession.moviesessionid=?"
-//	utils.Db.QueryRow(sql1, movieSessionID).Scan(&res.ShowCinema, &res.ShowScreen, &res.ShowTime, &res.ShowMovie, &res.ShowInfo, &res.Price)
-//	fmt.Println("res", res)
-//	return res, nil
-//}
-
 func GetMovieSessionByTicket(ticket *model.Ticket) (*model.MovieSession, error) {
 	sql := "SELECT moviesessionid FROM ticket WHERE ticketid=?"
 	var movieSessionID int

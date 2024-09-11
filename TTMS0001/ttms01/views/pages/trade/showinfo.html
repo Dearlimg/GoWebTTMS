@@ -39,7 +39,7 @@
     <p><strong>类型:</strong> {{.Movie.Genre}}</p>
     <p><strong>上映时间:</strong> {{.Movie.Showtime}}</p>
     <p><strong>时长:</strong> {{.Movie.Duration}}min</p>
-    <p><strong>简介:</strong> {{.Introductions.Intro}}</p>
+    <p><strong>简介:</strong> {{.Movie.Introduction}}</p>
     <h3>评论区</h3>
 
     <!-- 评论列表 -->
@@ -50,14 +50,14 @@
                 <li>
 
                     {{if .At}}
-                        <strong>{{.Speaker}}&nbsp@&nbsp<strong>{{.At}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Comment}}</strong></strong>
+                        <strong>{{.Speaker}}&nbsp@&nbsp<strong>{{.At}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong></strong>
                     {{else}}
-                        <strong>{{.Speaker}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Comment}}</strong>
+                        <strong>{{.Speaker}}&nbsp<strong>{{.Time}}&nbsp&nbsp&nbsp</strong> {{.Word}}</strong>
                     {{end}}
 
-{{/*                    <strong>{{.Speaker}}:<strong>{{.Time}}:</strong> {{.Comment}}</strong>*/}}
+                    {{/*                    <strong>{{.Speaker}}:<strong>{{.Time}}:</strong> {{.Comment}}</strong>*/}}
                     {{if $.IsAdmin}}
-                        <a href="/deletecomment?comment={{.Comment}}&speaker={{.Speaker}}&time={{.Time}}&movie={{.Movie}}" style="width: 140px;height: 40px;">
+                        <a href="/deletecomment?comment={{.Word}}&speaker={{.Speaker}}&time={{.Time}}&movie={{.Movie}}" style="width: 140px;height: 40px;">
                             <button type="submit">删除评论</button>
                         </a>
                     {{else}}
@@ -71,14 +71,6 @@
     <div class="comment-form">
         <h4>我来评论:</h4>
         <form action="/submitcomment?moviename={{.Movie.MovieName}}" method="post">
-{{/*            {{if $.IsAdmin}}*/}}
-{{/*                <label for="username">用户名:</label>*/}}
-{{/*                <input type="text" id="username" name="username" value="{{.Username}}" required>*/}}
-{{/*            {{else}}*/}}
-{{/*                <label for="username">用户名:</label>*/}}
-{{/*                <input type="button" id="username" name="username" value="{{.Username}}" required>*/}}
-{{/*            {{end}}*/}}
-
             {{if $.IsAdmin}}
                 <label for="username">用户名:</label>
                 <input type="text" id="username" name="username" value="{{.Username}}" required>
@@ -96,44 +88,43 @@
             {{else}}
                 <a href="/jumptologin" class="button-link">快去登录吧</a>
             {{end}}
-{{/*            <button type="submit">提交评论</button>*/}}
         </form>
     </div>
 </div>
 
 {{range .ShowSession}}
-<div class="movie-info">
-    <h3>场次信息</h3>
-    <p>放映电影:{{.ShowMovie}}</p>
-    <p>电影院:{{.ShowCinema}}</p>
-    <p>放映厅:{{.ShowScreen}}</p>
-    <p>放映时间:{{.ShowTime}}</p>
-    <p>价格:{{.Price}}</p>
-    <p>剩余:{{.Remaining}}</p>
-    {{if .State}}
-        <a class="button-link">已经卖完了</a>
-    {{else}}
-        {{if $.IsLogin}}
-            <a href="/buy?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link">看这场</a>
+    <div class="movie-info">
+        <h3>场次信息</h3>
+        <p>放映电影:{{.ShowMovie}}</p>
+        <p>电影院:{{.ShowCinema}}</p>
+        <p>放映厅:{{.ShowScreen}}</p>
+        <p>放映时间:{{.ShowTime}}</p>
+        <p>价格:{{.Price}}</p>
+        <p>剩余:{{.Remaining}}</p>
+        {{if .State}}
+            <a class="button-link">已经卖完了</a>
         {{else}}
-            <a href="/jumptologin" class="button-link">快去登录吧</a>
+            {{if $.IsLogin}}
+                <a href="/buy?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link">看这场</a>
+            {{else}}
+                <a href="/jumptologin" class="button-link">快去登录吧</a>
+            {{end}}
+
+            {{if $.IsAdmin}}
+                {{if eq .Remaining 20}}
+                    <a href="/deletemoviesession?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link">删除这个场次</a>
+                {{else}}
+                    <a class="button-link">已经有票售出,无法删除场次</a>
+                {{end}}
+
+            {{else}}
+
+            {{end}}
+
         {{end}}
 
-                    {{if $.IsAdmin}}
-                        {{if eq .Remaining 20}}
-                            <a href="/deletemoviesession?ShowMovie={{.ShowMovie}}&ShowCinema={{.ShowCinema}}&ShowScreen={{.ShowScreen}}&ShowTime={{.ShowTime}}&ShowInfo={{.ShowInfo}}&Price={{.Price}}" class="button-link">删除这个场次</a>
-                        {{else}}
-                            <a class="button-link">已经有票售出,无法删除场次</a>
-                        {{end}}
-
-                    {{else}}
-
-                    {{end}}
-
-    {{end}}
-
-    <a href="/main" class="button-link" >继续选择</a>
-</div>
+        <a href="/main" class="button-link" >继续选择</a>
+    </div>
 {{end}}
 {{if .IsAdmin}}
     <a href="/addmoviesession?Moviename={{.Movie.MovieName}}" class="button-link" >增加场次</a>
